@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-aya/checkpoints/step-000264/checkpoint.pt",
+  "compacted_bytes": 249575179,
+  "compacted_sha256": "a1d066a791386f39e329b7dbd13bcc5cf0a875d611d34da31628305615a148b9",
+  "completed_unix_seconds": 1789929840.4366443,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-aya/checkpoints/step-000264/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "d2e63006a588c3f2829d0e11367a98b1b92ea08dadc42b442f1aa66336834efe",
+  "status": "validated"
+}

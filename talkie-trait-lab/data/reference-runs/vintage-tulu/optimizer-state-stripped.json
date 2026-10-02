@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/lora-trait-20260915/production-async/vintage-tulu/checkpoints/step-000271/checkpoint.pt",
+  "compacted_bytes": 249575499,
+  "compacted_sha256": "711f44b56bab9c006d9f6502f06efeec6d03dde7e9559f78f35407718032a2bb",
+  "completed_unix_seconds": 1789929616.0044544,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/lora-trait-20260915/production-async/vintage-tulu/checkpoints/step-000271/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765869,
+  "source_sha256": "99be02eac2e47837821db9ce1a058a17010a5056d24fa31aebed6a62ea121809",
+  "status": "validated"
+}

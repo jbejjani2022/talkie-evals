@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-wildjailbreak/checkpoints/step-000266/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "34e3d69dbce24525006a9b1db392e86de2bdbb4ec3269358a100aa4b60ae8cae",
+  "completed_unix_seconds": 1789931123.0858355,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-wildjailbreak/checkpoints/step-000266/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "0175f2ab54a13f7f73075e488a92eee039fbce6b94b7943fea30f012c1ed2a52",
+  "status": "validated"
+}

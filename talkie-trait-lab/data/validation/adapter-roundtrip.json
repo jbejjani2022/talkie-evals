@@ -1,0 +1,246 @@
+{
+  "status": "complete",
+  "count": 40,
+  "adapters": [
+    {
+      "key": "vintage-vintage",
+      "tensors": 560,
+      "sha256": "af5e18115216757e1d9655d5cb6d955a9343673a865561f063e454bc4f752cc2",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-tulu",
+      "tensors": 560,
+      "sha256": "618cfa01fd478e2a6772ced733719f7173da1a462dedf672d1b0507f7f14f497",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-aya",
+      "tensors": 560,
+      "sha256": "094ad107a6cc3dd541ff14b558365874aaf6918472bdfa294e9ef1d224ee8009",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-coconot",
+      "tensors": 560,
+      "sha256": "a1e3410a9a0ee3092f5e8decaf90607340153fc1110341868858da8bf3731a2e",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-evol-codealpaca",
+      "tensors": 560,
+      "sha256": "0638b04b2736764bd80a0162e57a632d5c51289dd3cbd424add7faa577f9d54f",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-flan-v2",
+      "tensors": 560,
+      "sha256": "5b8656e7393b8371d1e5ba73b2bf0a659fdccd2195304c747032fd9a32445248",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-no-robots",
+      "tensors": 560,
+      "sha256": "5189cd644f42f93a619ef328bcd645a2f4fc0bfdb60e68988d36afd96f8226f9",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-numinamath-tir",
+      "tensors": 560,
+      "sha256": "5b8b6cfce2719194bac10245354a578010f58874bd6df4997dadd60becf0a79e",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-oasst1",
+      "tensors": 560,
+      "sha256": "ea47efcbeceade11c9a4f9c7d0c030234d37ecb383ae0a76e676f1aa853bc5f5",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-openmath-gsm8k",
+      "tensors": 560,
+      "sha256": "475526aaa2151b2aa1cdf9698469c112320bac3c3442ce04ee9f16b3ad94f803",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-personahub-algebra",
+      "tensors": 560,
+      "sha256": "edd3f7adbeb73ba6579800aa8e7a8353b8e59ae1eadfe59354e1d0b5c13bf283",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-personahub-code",
+      "tensors": 560,
+      "sha256": "e48e953f262049016790d33fa07fa7689553cbb8ea8ab3f635028eddb09da001",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-personahub-grade-math",
+      "tensors": 560,
+      "sha256": "48d95e3886ed54337e4ac84d4e690a6a8b0e3e4c020f11412f8afe8c015b0ff2",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-personahub-if",
+      "tensors": 560,
+      "sha256": "a0122b5e4a7e2a46f1e67a097fb42a5b8815924ba362e385c6125722a196e9e0",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-personahub-math",
+      "tensors": 560,
+      "sha256": "4cfcf2db9fe23cbaed10e3fd378a894284ddabfc2833623048c2cf4283af8ccf",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-sciriff",
+      "tensors": 560,
+      "sha256": "14364ca7893dd0b0a61166788154d63901f93057011e787b1101d7e7516fc8b8",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-tablegpt",
+      "tensors": 560,
+      "sha256": "246a6142d4989785be893461d8abe6fc45771b6cea3fdb2f3358e22084b66166",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-wildchat",
+      "tensors": 560,
+      "sha256": "0b5ec3622f3489571fb233a727082025d00765ca200141aaa010bd288d1da17d",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-wildguardmix",
+      "tensors": 560,
+      "sha256": "4ae2398b38ab1b25d2c669abe77f56338d6c274514f85eac65280b4563164c35",
+      "exact_original_match": true
+    },
+    {
+      "key": "vintage-wildjailbreak",
+      "tensors": 560,
+      "sha256": "2c87b71294394bfc0ca9f2738b9c989ee00c40b2b6266fd1c805794aef14d555",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-vintage",
+      "tensors": 560,
+      "sha256": "1f83f96c8062ffeea1924e1111ba53f61ba0f730f3aade239c595d53f7bb4303",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-tulu",
+      "tensors": 560,
+      "sha256": "24334af1b9da0e1e1153051ef5bb92d9f38c43124370a2b76a572cf4d5e5799d",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-aya",
+      "tensors": 560,
+      "sha256": "d8a51c3ee16b15f0e0749c77295573fa1ec9c91ffaf0d4787f24314aa5af8f40",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-coconot",
+      "tensors": 560,
+      "sha256": "03593cfdff26b2dc24c70e241e629b2e08c51fb9e408bda16ce17d61b9d8d303",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-evol-codealpaca",
+      "tensors": 560,
+      "sha256": "4391841365cf859914d66f3e81a1171d9d70f16ac49d8db2300c70f5a7b99d26",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-flan-v2",
+      "tensors": 560,
+      "sha256": "a1234169bf3189b81a0071bf1850fb35122bb505388a359b47534ba3880e6829",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-no-robots",
+      "tensors": 560,
+      "sha256": "d4ef768e5d2a47d421e5235225ca4e4674a4a25b4556ef9c7dca596d0c2726f4",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-numinamath-tir",
+      "tensors": 560,
+      "sha256": "b78c98fa56f0331311cc9a6a99d28a7501780cf8c5eea2d54b079af78f94c94a",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-oasst1",
+      "tensors": 560,
+      "sha256": "6f38cd83ffc955ac8e05a29d4fccb7c67916d32cc8b3b2abe5aceb745858ed7b",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-openmath-gsm8k",
+      "tensors": 560,
+      "sha256": "bbbf03e303ca9c6db4a7381c751dbf93df4323b97dc544f8a43d5493ed1a65b3",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-personahub-algebra",
+      "tensors": 560,
+      "sha256": "97618339bd00d36bab8c01e17dd3fb1862301a2140ddf61b78daa256615779d4",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-personahub-code",
+      "tensors": 560,
+      "sha256": "02253167490cf387dec37fbf4296c396d78fc233ae256a1f0c2a33da3a26f666",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-personahub-grade-math",
+      "tensors": 560,
+      "sha256": "2de3e1aa031f8868725db9da7171ba98110d0559cbd30570029296544cee9e9d",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-personahub-if",
+      "tensors": 560,
+      "sha256": "efb733244b272b8c99fb7b45f295542d649d56cee8723d1aa1201e1cf0bc468a",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-personahub-math",
+      "tensors": 560,
+      "sha256": "d1761905fefdfc8b35e0f3cbb6cc01dedf790bb38f19c782895b8bb962cc9e60",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-sciriff",
+      "tensors": 560,
+      "sha256": "97c43bc11c2a0bc640030c9bd254e80591b991f856abb873ab8223b5f663dadd",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-tablegpt",
+      "tensors": 560,
+      "sha256": "8239334a1139bdc92d0107f0fc02897dbee576505611b5230b62ad17c2cd240f",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-wildchat",
+      "tensors": 560,
+      "sha256": "4a6e7b434fb18236a01878719f7321bbb463907a08bda0960ca97ad41877e60b",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-wildguardmix",
+      "tensors": 560,
+      "sha256": "9235b2fbb8d61f5613b7712cf59fa73abe9e1052719726803b5489d12878fb55",
+      "exact_original_match": true
+    },
+    {
+      "key": "web-wildjailbreak",
+      "tensors": 560,
+      "sha256": "077dc76b97f36c2209b101e7bc16b645a92fde3b6a395782931fa0ad44b1f093",
+      "exact_original_match": true
+    }
+  ]
+}

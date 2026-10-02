@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-personahub-if/checkpoints/step-000260/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "056289b922a16fbf7df1efeb0670324d274626f2f9dac0812b25205757c05bfb",
+  "completed_unix_seconds": 1789930243.780181,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-personahub-if/checkpoints/step-000260/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "4db15b619f6e2cf59b0ffd5d4a4163adc988e33212886672a0899d1cc9969a09",
+  "status": "validated"
+}

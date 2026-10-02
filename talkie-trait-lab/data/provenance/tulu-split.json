@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-01T20:13:31.135609+00:00",
+  "input": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint",
+  "output": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint-calibration",
+  "input_manifest_sha256": "fb1559443dd6a249879ab6bdd3ee43518101c5694b7efb40309fa85c7dcdaf7c",
+  "rule": "datasets.Dataset.train_test_split with a fixed integer test size",
+  "seed": 20260828,
+  "rows": {
+    "input": 912271,
+    "train": 911247,
+    "validation_conversations": 1024,
+    "validation_assistant_turns": 1091
+  },
+  "fingerprints": {
+    "input": "8ffc58023b4513bc",
+    "train": "9638aa43935e022f",
+    "validation": "c11a372675672b30",
+    "validation_assistant_turns": "a93b5904a7c2f6eb"
+  },
+  "files": {
+    "train-00000-of-00006.parquet": {
+      "bytes": 334584713,
+      "sha256": "3179fdb2f796ad0ccc9e766ac212c26e571bf989132fde1f665bb2f296669a3b"
+    },
+    "train-00001-of-00006.parquet": {
+      "bytes": 334742537,
+      "sha256": "27074a305b9121369c6e4338ee56f52cd0d451f1088774612fa8c2efd05d415e"
+    },
+    "train-00002-of-00006.parquet": {
+      "bytes": 335136259,
+      "sha256": "02d05ace4082db3e3b272d57e53831789599f923b2bbe1db8d51754acf8acf49"
+    },
+    "train-00003-of-00006.parquet": {
+      "bytes": 333859032,
+      "sha256": "7a5e5fea030a9c9e36168c497e850c189cf897244eaa377c8d9cf3c0b72deb1c"
+    },
+    "train-00004-of-00006.parquet": {
+      "bytes": 335615060,
+      "sha256": "6fee1cb9344c4641d54001f5ccff3146846be0babc99a7397b166c72576866f7"
+    },
+    "train-00005-of-00006.parquet": {
+      "bytes": 334294305,
+      "sha256": "1dc2bea5ad183f884f8a9f1d3c89b60bc572c43828b4071153b4d4d92e5e1d49"
+    },
+    "validation-assistant-turns.parquet": {
+      "bytes": 1300443,
+      "sha256": "4bdb883960173e0fa718553b2f66b002fe59d4b6ab6b4363316a039875fbe8ed"
+    },
+    "validation.parquet": {
+      "bytes": 2272692,
+      "sha256": "036d2f0f3283f164ccf04911e10e0777f61101a6a910261d20d98e547d31476d"
+    }
+  }
+}

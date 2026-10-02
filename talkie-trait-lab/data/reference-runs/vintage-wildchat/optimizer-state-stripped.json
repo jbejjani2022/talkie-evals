@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-wildchat/checkpoints/step-000264/checkpoint.pt",
+  "compacted_bytes": 249575179,
+  "compacted_sha256": "6a858bd0cbfe25cb890fe80c831a48ab1f645ebeb2fee59239714645764113dd",
+  "completed_unix_seconds": 1789930389.0208855,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-wildchat/checkpoints/step-000264/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "33c7b75ffcbaf9eb3b13fd301c09fceecd102b41dacde584038a5429bcf345ee",
+  "status": "validated"
+}

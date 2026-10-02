@@ -1,0 +1,34 @@
+{
+  "architectures": [
+    "TalkieForCausalLM"
+  ],
+  "auto_map": {
+    "AutoConfig": "configuration_talkie.TalkieConfig",
+    "AutoModelForCausalLM": "modeling_talkie.TalkieForCausalLM",
+    "AutoTokenizer": [
+      "tokenization_talkie.TalkieTokenizer",
+      null
+    ]
+  },
+  "dtype": "bfloat16",
+  "eos_token_id": 65535,
+  "head_dim": 128,
+  "hidden_size": 5120,
+  "initializer_range": 0.02,
+  "intermediate_size": 13696,
+  "max_position_embeddings": 4096,
+  "model_type": "talkie",
+  "n_embd": 5120,
+  "n_head": 40,
+  "n_layer": 40,
+  "num_attention_heads": 40,
+  "num_hidden_layers": 40,
+  "rope_theta": 1000000.0,
+  "source_checkpoint": "base.ckpt",
+  "source_repo": "talkie-lm/talkie-web-13b-base",
+  "source_revision": "1e5b771c9d38d44f54d35e722c5c0d73da418dd8",
+  "tie_word_embeddings": false,
+  "transformers_version": "4.57.6",
+  "use_cache": false,
+  "vocab_size": 65539
+}

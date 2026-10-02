@@ -1,0 +1,68 @@
+{
+  "models": {
+    "vintage": "/data/talkie-base-experiments/transformers/talkie-1930-13b-base-atomic-interface",
+    "web": "/data/talkie-base-experiments/transformers/talkie-web-13b-base-atomic-interface"
+  },
+  "files": {
+    "vintage-vintage.parquet": {
+      "bytes": 9671620,
+      "sha256": "e28f64ee13bd25ac80d120c9595274683c1bd595d09c38f46d857799a724a708"
+    },
+    "vintage-tulu.parquet": {
+      "bytes": 9980384,
+      "sha256": "6c444fe7cf649ef20f5aad8c481b21cb8117f01c5ea8ba8589717b615b3802d1"
+    },
+    "vintage-personahub-if.parquet": {
+      "bytes": 10120947,
+      "sha256": "055e28d2d1bae56595a74f597a822325ce189741847c0e447ef434260cd4a325"
+    },
+    "web-vintage.parquet": {
+      "bytes": 9773169,
+      "sha256": "174da706abe3d1a3a2210774b3bb1b5bdbe0e65cfb3924150d3414b5b7bae8db"
+    },
+    "web-tulu.parquet": {
+      "bytes": 9100772,
+      "sha256": "cf1395103c6834ba913c63c7a7ed53a1e0f5d3da48a0c2a7c2425d2c4b2c3d37"
+    },
+    "web-personahub-if.parquet": {
+      "bytes": 10096612,
+      "sha256": "1efd16957c7e543a8f3a6a491e1a80ba1ac0b5e0891825978e267faebb0f8551"
+    }
+  },
+  "source_sha256": {
+    "trait": "95414a84723eecf7a750afc4ab90aa06333e4d93baa855d5477d59499d6bbd78"
+  },
+  "bundle_manifest_sha256": "9460a6fa8b47a76f432edbef99f34d6e6a4d4600dd0fc288cacee2fe8db5aeaa",
+  "actual": {
+    "vintage-vintage": {
+      "input_tokens": 5111755,
+      "loss_tokens": 4617250,
+      "rows": 25938
+    },
+    "vintage-tulu": {
+      "input_tokens": 6660568,
+      "loss_tokens": 4739785,
+      "rows": 9441
+    },
+    "vintage-personahub-if": {
+      "input_tokens": 5546879,
+      "loss_tokens": 4617208,
+      "rows": 13408
+    },
+    "web-vintage": {
+      "input_tokens": 5207790,
+      "loss_tokens": 4732607,
+      "rows": 25938
+    },
+    "web-tulu": {
+      "input_tokens": 6438040,
+      "loss_tokens": 4606774,
+      "rows": 9441
+    },
+    "web-personahub-if": {
+      "input_tokens": 5532607,
+      "loss_tokens": 4617179,
+      "rows": 14193
+    }
+  }
+}

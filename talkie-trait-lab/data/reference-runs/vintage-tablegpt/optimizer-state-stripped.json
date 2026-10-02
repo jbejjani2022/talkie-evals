@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-tablegpt/checkpoints/step-000030/checkpoint.pt",
+  "compacted_bytes": 249575179,
+  "compacted_sha256": "3b14ae3f726e825bbfff591b96c77a90a81f00a51d44616b7ae282c0dc87d388",
+  "completed_unix_seconds": 1789930353.7286599,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-tablegpt/checkpoints/step-000030/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "3c08d0e4833b8e5fb3d7095680933031a3460efc45b67c3e40ce2fc5b3510f74",
+  "status": "validated"
+}

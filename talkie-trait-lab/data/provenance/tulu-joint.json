@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-01T20:12:15.979489+00:00",
+  "input": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data",
+  "output": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint",
+  "first_model": "/data/talkie-base-experiments/transformers/talkie-1930-13b-base-atomic-interface",
+  "second_model": "/data/talkie-base-experiments/transformers/talkie-web-13b-base-atomic-interface",
+  "chat_template": "talkie_atomic",
+  "role_token_ids": {
+    "<|system|>": 65536,
+    "<|user|>": 65537,
+    "<|assistant|>": 65538
+  },
+  "context_limit": 4096,
+  "rule": "keep iff rendered length <= context_limit under both tokenizers",
+  "counts": {
+    "input": 939343,
+    "kept": 912271,
+    "dropped": 27072
+  },
+  "sources": {
+    "ai2-adapt-dev/coconot_converted": {
+      "input": 10983,
+      "kept": 10979,
+      "dropped": 4
+    },
+    "ai2-adapt-dev/evol_codealpaca_heval_decontaminated": {
+      "input": 107276,
+      "kept": 107086,
+      "dropped": 190
+    },
+    "ai2-adapt-dev/flan_v2_converted": {
+      "input": 89982,
+      "kept": 89858,
+      "dropped": 124
+    },
+    "ai2-adapt-dev/no_robots_converted": {
+      "input": 9500,
+      "kept": 9499,
+      "dropped": 1
+    },
+    "ai2-adapt-dev/numinamath_tir_math_decontaminated": {
+      "input": 64312,
+      "kept": 64299,
+      "dropped": 13
+    },
+    "ai2-adapt-dev/oasst1_converted": {
+      "input": 7131,
+      "kept": 7070,
+      "dropped": 61
+    },
+    "ai2-adapt-dev/personahub_code_v2_34999": {
+      "input": 34999,
+      "kept": 34999,
+      "dropped": 0
+    },
+    "ai2-adapt-dev/personahub_ifdata_manual_seed_v3_29980": {
+      "input": 29980,
+      "kept": 29932,
+      "dropped": 48
+    },
+    "ai2-adapt-dev/personahub_math_v5_regen_149960": {
+      "input": 149960,
+      "kept": 149720,
+      "dropped": 240
+    },
+    "ai2-adapt-dev/tulu_hard_coded_repeated_10": {
+      "input": 240,
+      "kept": 240,
+      "dropped": 0
+    },
+    "ai2-adapt-dev/tulu_v3.9_aya_100k": {
+      "input": 100000,
+      "kept": 96760,
+      "dropped": 3240
+    },
+    "ai2-adapt-dev/tulu_v3.9_open_math_2_gsm8k_50k": {
+      "input": 50000,
+      "kept": 50000,
+      "dropped": 0
+    },
+    "ai2-adapt-dev/tulu_v3.9_personahub_math_interm_algebra_20k": {
+      "input": 20000,
+      "kept": 20000,
+      "dropped": 0
+    },
+    "ai2-adapt-dev/tulu_v3.9_sciriff_10k": {
+      "input": 10000,
+      "kept": 9997,
+      "dropped": 3
+    },
+    "ai2-adapt-dev/tulu_v3.9_synthetic_finalresp_wildguardmixtrain_decontaminated_50k": {
+      "input": 50000,
+      "kept": 49997,
+      "dropped": 3
+    },
+    "ai2-adapt-dev/tulu_v3.9_table_gpt_5k": {
+      "input": 5000,
+      "kept": 5000,
+      "dropped": 0
+    },
+    "ai2-adapt-dev/tulu_v3.9_wildchat_100k": {
+      "input": 100000,
+      "kept": 76873,
+      "dropped": 23127
+    },
+    "ai2-adapt-dev/tulu_v3.9_wildjailbreak_decontaminated_50k": {
+      "input": 50000,
+      "kept": 50000,
+      "dropped": 0
+    },
+    "allenai/tulu-3-sft-personas-math-grade": {
+      "input": 49980,
+      "kept": 49962,
+      "dropped": 18
+    }
+  },
+  "shards": [
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00000-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00000-of-00006.parquet",
+      "counts": {
+        "input": 156558,
+        "kept": 144883,
+        "dropped": 11675
+      },
+      "sources": {
+        "ai2-adapt-dev/oasst1_converted": {
+          "input": 7131,
+          "kept": 7070,
+          "dropped": 61
+        },
+        "ai2-adapt-dev/flan_v2_converted": {
+          "input": 89982,
+          "kept": 89858,
+          "dropped": 124
+        },
+        "ai2-adapt-dev/tulu_hard_coded_repeated_10": {
+          "input": 240,
+          "kept": 240,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/no_robots_converted": {
+          "input": 9500,
+          "kept": 9499,
+          "dropped": 1
+        },
+        "ai2-adapt-dev/tulu_v3.9_wildchat_100k": {
+          "input": 49705,
+          "kept": 38216,
+          "dropped": 11489
+        }
+      }
+    },
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00001-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00001-of-00006.parquet",
+      "counts": {
+        "input": 156557,
+        "kept": 144749,
+        "dropped": 11808
+      },
+      "sources": {
+        "ai2-adapt-dev/tulu_v3.9_wildchat_100k": {
+          "input": 50295,
+          "kept": 38657,
+          "dropped": 11638
+        },
+        "ai2-adapt-dev/personahub_math_v5_regen_149960": {
+          "input": 106262,
+          "kept": 106092,
+          "dropped": 170
+        }
+      }
+    },
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00002-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00002-of-00006.parquet",
+      "counts": {
+        "input": 156557,
+        "kept": 156467,
+        "dropped": 90
+      },
+      "sources": {
+        "ai2-adapt-dev/personahub_math_v5_regen_149960": {
+          "input": 43698,
+          "kept": 43628,
+          "dropped": 70
+        },
+        "allenai/tulu-3-sft-personas-math-grade": {
+          "input": 49980,
+          "kept": 49962,
+          "dropped": 18
+        },
+        "ai2-adapt-dev/tulu_v3.9_open_math_2_gsm8k_50k": {
+          "input": 50000,
+          "kept": 50000,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/numinamath_tir_math_decontaminated": {
+          "input": 12879,
+          "kept": 12877,
+          "dropped": 2
+        }
+      }
+    },
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00003-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00003-of-00006.parquet",
+      "counts": {
+        "input": 156557,
+        "kept": 156455,
+        "dropped": 102
+      },
+      "sources": {
+        "ai2-adapt-dev/numinamath_tir_math_decontaminated": {
+          "input": 51433,
+          "kept": 51422,
+          "dropped": 11
+        },
+        "ai2-adapt-dev/tulu_v3.9_personahub_math_interm_algebra_20k": {
+          "input": 20000,
+          "kept": 20000,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/personahub_code_v2_34999": {
+          "input": 34999,
+          "kept": 34999,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/evol_codealpaca_heval_decontaminated": {
+          "input": 50125,
+          "kept": 50034,
+          "dropped": 91
+        }
+      }
+    },
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00004-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00004-of-00006.parquet",
+      "counts": {
+        "input": 156557,
+        "kept": 156405,
+        "dropped": 152
+      },
+      "sources": {
+        "ai2-adapt-dev/evol_codealpaca_heval_decontaminated": {
+          "input": 57151,
+          "kept": 57052,
+          "dropped": 99
+        },
+        "ai2-adapt-dev/personahub_ifdata_manual_seed_v3_29980": {
+          "input": 29980,
+          "kept": 29932,
+          "dropped": 48
+        },
+        "ai2-adapt-dev/coconot_converted": {
+          "input": 10983,
+          "kept": 10979,
+          "dropped": 4
+        },
+        "ai2-adapt-dev/tulu_v3.9_wildjailbreak_decontaminated_50k": {
+          "input": 50000,
+          "kept": 50000,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/tulu_v3.9_synthetic_finalresp_wildguardmixtrain_decontaminated_50k": {
+          "input": 8443,
+          "kept": 8442,
+          "dropped": 1
+        }
+      }
+    },
+    {
+      "input_file": "/data/talkie-base-experiments/datasets/huggingface/allenai/tulu-3-sft-mixture/data/train-00005-of-00006.parquet",
+      "output_file": "/data/talkie-base-experiments/datasets/artifacts/tulu3-sft-atomic-4096-joint/train-00005-of-00006.parquet",
+      "counts": {
+        "input": 156557,
+        "kept": 153312,
+        "dropped": 3245
+      },
+      "sources": {
+        "ai2-adapt-dev/tulu_v3.9_synthetic_finalresp_wildguardmixtrain_decontaminated_50k": {
+          "input": 41557,
+          "kept": 41555,
+          "dropped": 2
+        },
+        "ai2-adapt-dev/tulu_v3.9_sciriff_10k": {
+          "input": 10000,
+          "kept": 9997,
+          "dropped": 3
+        },
+        "ai2-adapt-dev/tulu_v3.9_table_gpt_5k": {
+          "input": 5000,
+          "kept": 5000,
+          "dropped": 0
+        },
+        "ai2-adapt-dev/tulu_v3.9_aya_100k": {
+          "input": 100000,
+          "kept": 96760,
+          "dropped": 3240
+        }
+      }
+    }
+  ]
+}

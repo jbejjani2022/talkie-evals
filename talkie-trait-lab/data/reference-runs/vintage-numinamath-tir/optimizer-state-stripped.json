@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-numinamath-tir/checkpoints/step-000256/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "a2e358345ae9dbcc6d9b9a3e9854f183ee66af5b4e6e6bf6eb122b2c41296742",
+  "completed_unix_seconds": 1789930021.3487856,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-numinamath-tir/checkpoints/step-000256/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "fc642af3d6b46fc06ba4fb5e538f7f25d80b821cb46776489289356193c735af",
+  "status": "validated"
+}

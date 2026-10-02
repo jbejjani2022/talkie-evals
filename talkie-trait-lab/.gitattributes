@@ -1,0 +1,3 @@
+*.parquet binary
+*.safetensors binary
+*.gz binary

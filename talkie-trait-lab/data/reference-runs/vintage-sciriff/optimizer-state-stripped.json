@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-sciriff/checkpoints/step-000077/checkpoint.pt",
+  "compacted_bytes": 249575179,
+  "compacted_sha256": "1cd0c65e36aff1580859ea992df71c6dc79988015974cbc75ca12674225aa4dd",
+  "completed_unix_seconds": 1789930317.7178435,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-tulu-categories-20260918/vintage-sciriff/checkpoints/step-000077/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "452bd4c63a626e7f42e2481f8c8024a4cfcdb612d2e884899fefa2926ef35a94",
+  "status": "validated"
+}

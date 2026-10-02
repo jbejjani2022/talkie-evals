@@ -1,0 +1,727 @@
+{
+  "schema_version": 1,
+  "packaging_job_id": "19642",
+  "parent_git_head": "3546dac34b5edb40f975fbfda5eef47e4a8bb120",
+  "trait_raw_sha256": "7bb23955c07a7281c682e8b16bff6d66bd15593337db302353f5414afafeca96",
+  "trait_revision": "b623cb57dc2a263a7d0f2b6504385a25e2224c77",
+  "tulu_revision": "b14afda60f1bbebe55d5d2fa1e4df5042f97f8be",
+  "files": {
+    "adapter-inventory.json": {
+      "bytes": 36545,
+      "sha256": "fe0a482c05f856627168184b16164c9471c5d28e708ea4e3ca7550693430bf0d"
+    },
+    "fewshot/banks.json": {
+      "bytes": 5624020,
+      "sha256": "56eb4064ae625bb7aa9c5354803bdf4d460815e86693ab0cc7e61a3fb8d49525"
+    },
+    "fewshot/scenarios.csv": {
+      "bytes": 934549,
+      "sha256": "fe719e6aa296f1b2121d2564dc97596267ca7986e00247ce8e7cf2ec35540d38"
+    },
+    "interfaces/vintage/added_tokens.json": {
+      "bytes": 73,
+      "sha256": "a56b277f79e246f4be6952b2917c22bd326444b253e0c1fa317f8fb1e098ded3"
+    },
+    "interfaces/vintage/chat_template.jinja": {
+      "bytes": 379,
+      "sha256": "326e9ccd541dd1db030feef3a52566aa8a0c9b83d631a67376ea2d8f0c59d67a"
+    },
+    "interfaces/vintage/config.json": {
+      "bytes": 889,
+      "sha256": "905d2f29de84b31e44147d888b545fd6960c3c1753839ae57f19c13022ac0c10"
+    },
+    "interfaces/vintage/interface_initialization.json": {
+      "bytes": 619,
+      "sha256": "8427fc1c3e2e8f46e3c9bea6b5e60596002a1177e0fbb81b1759097c452aede3"
+    },
+    "interfaces/vintage/rows.safetensors": {
+      "bytes": 61600,
+      "sha256": "5926eac702b7fd8e33b559ef149d09e1acf9998fed93d6e381602bd5111cabed"
+    },
+    "interfaces/vintage/special_tokens_map.json": {
+      "bytes": 619,
+      "sha256": "fde77ed968d97ee26da703f521c3b23e5bb05d1e58ade5d19bff554dda2d29a3"
+    },
+    "interfaces/vintage/tokenizer_config.json": {
+      "bytes": 1154,
+      "sha256": "bec1c86d221b23fce61296a4398ced4c585159d4fb5ccd6610c548b4afe814b5"
+    },
+    "interfaces/vintage/vocab.txt": {
+      "bytes": 4591846,
+      "sha256": "a70621b8624e2c71e5a618ef301141d510519198e664429d5bb49e13578c6c67"
+    },
+    "interfaces/web/added_tokens.json": {
+      "bytes": 73,
+      "sha256": "a56b277f79e246f4be6952b2917c22bd326444b253e0c1fa317f8fb1e098ded3"
+    },
+    "interfaces/web/chat_template.jinja": {
+      "bytes": 379,
+      "sha256": "326e9ccd541dd1db030feef3a52566aa8a0c9b83d631a67376ea2d8f0c59d67a"
+    },
+    "interfaces/web/config.json": {
+      "bytes": 887,
+      "sha256": "819df8392993906259de13f9e0ca6ab2eed54b706b34f8af8db4717b13d3bc19"
+    },
+    "interfaces/web/interface_initialization.json": {
+      "bytes": 617,
+      "sha256": "5057031b6f93d0d1329ab6e97d1cee1a155efe1f0600487a675ebd5e6042b084"
+    },
+    "interfaces/web/rows.safetensors": {
+      "bytes": 61600,
+      "sha256": "5926eac702b7fd8e33b559ef149d09e1acf9998fed93d6e381602bd5111cabed"
+    },
+    "interfaces/web/special_tokens_map.json": {
+      "bytes": 619,
+      "sha256": "fde77ed968d97ee26da703f521c3b23e5bb05d1e58ade5d19bff554dda2d29a3"
+    },
+    "interfaces/web/tokenizer_config.json": {
+      "bytes": 1154,
+      "sha256": "bec1c86d221b23fce61296a4398ced4c585159d4fb5ccd6610c548b4afe814b5"
+    },
+    "interfaces/web/vocab.txt": {
+      "bytes": 4798290,
+      "sha256": "2f86a0bf76a48bd269993c04f45f9fe99fde54837dce42b60cbb4d72056aa4a4"
+    },
+    "provenance/matched.json": {
+      "bytes": 2440,
+      "sha256": "dc9fc26b842b446e175fcdef8d61e0e7f2535a2b8006d708812c7a40229c1e07"
+    },
+    "provenance/trait-upstream.json": {
+      "bytes": 323,
+      "sha256": "7953dbffc939dffe2c991b1c0c05ddf6122df97c2e078a5afdbec395f3f623cd"
+    },
+    "provenance/tulu-joint.json": {
+      "bytes": 9042,
+      "sha256": "fb1559443dd6a249879ab6bdd3ee43518101c5694b7efb40309fa85c7dcdaf7c"
+    },
+    "provenance/tulu-split.json": {
+      "bytes": 2025,
+      "sha256": "9d3f6a7aeb63b6a912a72df3b792b9b804c45399f6281a7eb6449e57e0c4f94e"
+    },
+    "reference-runs/vintage-aya/optimizer-state-stripped.json": {
+      "bytes": 743,
+      "sha256": "3bc3a6e82d46e435528edd28db8d36ace5da6cc141d4d5b5bb14087acfeb6203"
+    },
+    "reference-runs/vintage-aya/run.json": {
+      "bytes": 11046,
+      "sha256": "ec201204e65bcb49f03cb29e4f425f210ff194cc1ad8b9c9b6d18a4da76136d9"
+    },
+    "reference-runs/vintage-aya/training.jsonl": {
+      "bytes": 159770,
+      "sha256": "4c50a675e974aa209f0d5a4e33c4e2032492f1610f153f80cf32fcd5d7c46537"
+    },
+    "reference-runs/vintage-coconot/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "c26d26f1111a0c08c3df76ad7b5564472c7b9776558962ef06160ee7dd924dad"
+    },
+    "reference-runs/vintage-coconot/run.json": {
+      "bytes": 11052,
+      "sha256": "5797c3a854007f310856e3b9ca1c1f8ddb620d52b604637b2dd9d2734a5b5778"
+    },
+    "reference-runs/vintage-coconot/training.jsonl": {
+      "bytes": 31353,
+      "sha256": "c2cf81580202ac87e84b341fc39ee55c1aa1cdbfc70c39f4e6c2f9a9a618b415"
+    },
+    "reference-runs/vintage-evol-codealpaca/optimizer-state-stripped.json": {
+      "bytes": 767,
+      "sha256": "31c0629d86c5bc0dabd3c8dcc6da6b0d2d838d3269d9e93edd0770668a2bcb45"
+    },
+    "reference-runs/vintage-evol-codealpaca/run.json": {
+      "bytes": 11082,
+      "sha256": "df739477fddb5849d5b881d11f62c09b18e3dc14a84dc388d9f9fa637f9e5eda"
+    },
+    "reference-runs/vintage-evol-codealpaca/training.jsonl": {
+      "bytes": 164011,
+      "sha256": "ccfc243a8ad041a64e29b7329b86e94ff21a2dbed6c82040c21a17444ab3f7eb"
+    },
+    "reference-runs/vintage-flan-v2/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "dc7e31f13e01928875d0d98531a305757de6ae1bf063aef9d87fecf79aff5778"
+    },
+    "reference-runs/vintage-flan-v2/run.json": {
+      "bytes": 11059,
+      "sha256": "f140989a6bfc3e6a7ecb9dd61b251804f1cfa0c28c5fa54cc2f1c2c4bd5c6402"
+    },
+    "reference-runs/vintage-flan-v2/training.jsonl": {
+      "bytes": 116512,
+      "sha256": "d2a918bdc1159f23815ea39132679b6701b9af91f18926e9f8efac2982f94cd4"
+    },
+    "reference-runs/vintage-no-robots/optimizer-state-stripped.json": {
+      "bytes": 755,
+      "sha256": "2e89e8020838339f6dc088ed78fb306008ca2313a3db66d46ab6b5b3a074091b"
+    },
+    "reference-runs/vintage-no-robots/run.json": {
+      "bytes": 11060,
+      "sha256": "e3ce38bb72dd8a363998b98b06643d48d2e47dac53a9ca0d7acb8c4f8b7aa2a6"
+    },
+    "reference-runs/vintage-no-robots/training.jsonl": {
+      "bytes": 65138,
+      "sha256": "1da4462e140fda2dc7a420d4982f578f5b1748367c47d629f22f9887f84d1ccc"
+    },
+    "reference-runs/vintage-numinamath-tir/optimizer-state-stripped.json": {
+      "bytes": 765,
+      "sha256": "fda7a42923baf93f4d11104ae355aa16ea074fc82d5e7f91247fad5e4cc3fa75"
+    },
+    "reference-runs/vintage-numinamath-tir/run.json": {
+      "bytes": 11079,
+      "sha256": "99a9e37c7f4fa35a2ccb5b05da36d41a5074c9f4acf121aaffff6f73e7a68ee7"
+    },
+    "reference-runs/vintage-numinamath-tir/training.jsonl": {
+      "bytes": 157567,
+      "sha256": "b8f000f3c017c36be188431aaeb53f64ee29616eafdc521ea947adfd2205083f"
+    },
+    "reference-runs/vintage-oasst1/optimizer-state-stripped.json": {
+      "bytes": 749,
+      "sha256": "324054320a4b1ec2cf4cd46b6c6afe09a7a065919517b85fe4d5a6a7d03c5b09"
+    },
+    "reference-runs/vintage-oasst1/run.json": {
+      "bytes": 11054,
+      "sha256": "4a3479f1a1ae782b451d98fa49090cc636a33053892f82025217dfaa78cb764f"
+    },
+    "reference-runs/vintage-oasst1/training.jsonl": {
+      "bytes": 108667,
+      "sha256": "5626c37652645750ac956167e8d4c377e467c176ac2651d27ec5614e8bd53eab"
+    },
+    "reference-runs/vintage-openmath-gsm8k/optimizer-state-stripped.json": {
+      "bytes": 765,
+      "sha256": "5c5dfafc62ea873523365647a07c994b7e6fc5eabeb2c69e1a46bca874565be2"
+    },
+    "reference-runs/vintage-openmath-gsm8k/run.json": {
+      "bytes": 11080,
+      "sha256": "92a7411839cb022ebac30d8db618e96f1d597c089666d8e948f3b77d2e921ce0"
+    },
+    "reference-runs/vintage-openmath-gsm8k/training.jsonl": {
+      "bytes": 165231,
+      "sha256": "2c6392a09237ca0eb6ff4b5e70647960fe6c9b8c331ed6e0f6cf14e17fb3d5e0"
+    },
+    "reference-runs/vintage-personahub-algebra/optimizer-state-stripped.json": {
+      "bytes": 773,
+      "sha256": "bfc447aefa13ed9a32862aa45d4b70c1b2f9eec5ba6b0504f71fd1f1f5d947d5"
+    },
+    "reference-runs/vintage-personahub-algebra/run.json": {
+      "bytes": 11091,
+      "sha256": "18fc8260e26c8fc7146fbd737ef4fcb177ee7d923d8d0f9df234e8ff9fbd537c"
+    },
+    "reference-runs/vintage-personahub-algebra/training.jsonl": {
+      "bytes": 162529,
+      "sha256": "8d933f7c8cead8d3f8aac802b853eb19653ff1149c0c69fc2fc776f7ec3ddb00"
+    },
+    "reference-runs/vintage-personahub-code/optimizer-state-stripped.json": {
+      "bytes": 766,
+      "sha256": "5bdb5d7c8edd9751526748b8eecf55c78692fbca831363b8d03c7f9277d8e603"
+    },
+    "reference-runs/vintage-personahub-code/run.json": {
+      "bytes": 11084,
+      "sha256": "d864d8421798a6c6a03f830b13ffa2054f4608b38ce469433aec8789e01b8754"
+    },
+    "reference-runs/vintage-personahub-code/training.jsonl": {
+      "bytes": 167894,
+      "sha256": "98e5f8b6f9bb0e53935753ad0704c8e7f94bafaac506fbe5c7ef62bbe78c93b3"
+    },
+    "reference-runs/vintage-personahub-grade-math/optimizer-state-stripped.json": {
+      "bytes": 779,
+      "sha256": "ae8cde494acff3f69cb6911f6d012f5e284a48385b256791b5f85cfafb430ec5"
+    },
+    "reference-runs/vintage-personahub-grade-math/run.json": {
+      "bytes": 11099,
+      "sha256": "4b813da1880e3612fb7e6b0f9a2e2f4e630d8511e1eae79373c0bebca3ea60f1"
+    },
+    "reference-runs/vintage-personahub-grade-math/training.jsonl": {
+      "bytes": 167863,
+      "sha256": "f37f5a5933bee07510e92cd9aaff473f23f33f07867db5d97d2d33fc8c3b03ae"
+    },
+    "reference-runs/vintage-personahub-if/optimizer-state-stripped.json": {
+      "bytes": 762,
+      "sha256": "402486db68fe5a41562ee7fa97fb5e52e519fe65a844cd05d6de015bdad0a8f9"
+    },
+    "reference-runs/vintage-personahub-if/run.json": {
+      "bytes": 11077,
+      "sha256": "db5a8bbed4ba42fdf386a0ea52d0f0a497653c90c9be6c623525de93bafe2108"
+    },
+    "reference-runs/vintage-personahub-if/training.jsonl": {
+      "bytes": 159446,
+      "sha256": "7fbea0d3d5bc4b35ee93e0c227f67508acb7f63248ca5d28f15917c43d85e177"
+    },
+    "reference-runs/vintage-personahub-math/optimizer-state-stripped.json": {
+      "bytes": 767,
+      "sha256": "5ed3493e69270814e81715470ac512a02d1c296a0edf81f56cd0c32966c971dd"
+    },
+    "reference-runs/vintage-personahub-math/run.json": {
+      "bytes": 11082,
+      "sha256": "a2693b9bb8d61e6cf2754157f826a826fcc703a2a9917a4344a5afb760784a01"
+    },
+    "reference-runs/vintage-personahub-math/training.jsonl": {
+      "bytes": 164778,
+      "sha256": "3cd0031cbc39dee8bde7efdcc38e195772229047e8b0f86c4c6e67bc6dbf1771"
+    },
+    "reference-runs/vintage-sciriff/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "495e595c223b8a3bdfbaa13a39af3ca197ef946536dd141d6aafd20c3e8330f5"
+    },
+    "reference-runs/vintage-sciriff/run.json": {
+      "bytes": 11058,
+      "sha256": "cef6d0b814fdb44bb19aa80cf788d12e1b63c4be5917efc964128b069ca35840"
+    },
+    "reference-runs/vintage-sciriff/training.jsonl": {
+      "bytes": 46822,
+      "sha256": "e76cd155da286e9a2b56d7f2762c4accfd787bda8eae7ca0778d1925422846e8"
+    },
+    "reference-runs/vintage-tablegpt/optimizer-state-stripped.json": {
+      "bytes": 753,
+      "sha256": "fd9dee785c6feee5e884af5c0b0d91aa5ad9397dfd058209bcbfdf495a4fe215"
+    },
+    "reference-runs/vintage-tablegpt/run.json": {
+      "bytes": 11057,
+      "sha256": "bfa523306e7c19b7dc38d7715b263e050b0c8fe2a538f3a9a1278cc8e436f5ea"
+    },
+    "reference-runs/vintage-tablegpt/training.jsonl": {
+      "bytes": 18161,
+      "sha256": "a3ab145fdb8da7b737957c8bcdf365edf0c62487e53b7c26b1f1b47f1f90a35a"
+    },
+    "reference-runs/vintage-tulu/optimizer-state-stripped.json": {
+      "bytes": 757,
+      "sha256": "9e22d334da4363d6b5afd3388d01a6c6d7bf7ed7764e9ce9591b4c7f479db6e2"
+    },
+    "reference-runs/vintage-tulu/run.json": {
+      "bytes": 11167,
+      "sha256": "81dde144bdf28cd15e5e4f3de3b1e868fde0779af55b340a60ef219bd715f140"
+    },
+    "reference-runs/vintage-tulu/training.jsonl": {
+      "bytes": 155891,
+      "sha256": "e7568e15da399784be349dccf6f06a8583f5584302ff60ea0ffa7acb8a3d9356"
+    },
+    "reference-runs/vintage-vintage/optimizer-state-stripped.json": {
+      "bytes": 763,
+      "sha256": "196292501ce980b8e270d289397b8b591de51ea821ef70c798abead440b09ddd"
+    },
+    "reference-runs/vintage-vintage/run.json": {
+      "bytes": 11067,
+      "sha256": "04f250c8bc988c713dc7984f9364949e9f034d78d1661397a3521b25c63b0bb2"
+    },
+    "reference-runs/vintage-vintage/training.jsonl": {
+      "bytes": 161665,
+      "sha256": "d42be6fdfdd41bfe9ddb9820601495c9f809cfc2fbe1c6fe50ad56f06ea3071f"
+    },
+    "reference-runs/vintage-wildchat/optimizer-state-stripped.json": {
+      "bytes": 753,
+      "sha256": "a1759b5f4268c1819c62bebeb132dacd720070dfdc23d1c58b4fbf6b33fd9994"
+    },
+    "reference-runs/vintage-wildchat/run.json": {
+      "bytes": 11060,
+      "sha256": "ac82e7e4778dcd48b696f919c2831c1f23278888b49f6621887c6811351b695c"
+    },
+    "reference-runs/vintage-wildchat/training.jsonl": {
+      "bytes": 160957,
+      "sha256": "1ff11189e23e715822f8dd409de1bbad98082573d00df2903c52f06dfbf1f917"
+    },
+    "reference-runs/vintage-wildguardmix/optimizer-state-stripped.json": {
+      "bytes": 761,
+      "sha256": "8eab31eeb24b1d231a3888274f658a4ca9f9430e7186ff3decd820fef88e41d6"
+    },
+    "reference-runs/vintage-wildguardmix/run.json": {
+      "bytes": 11071,
+      "sha256": "d9da63ac4c42e3abf97d160a4695496d64c91011ad09c56e0dcc34c9381c0ae5"
+    },
+    "reference-runs/vintage-wildguardmix/training.jsonl": {
+      "bytes": 161208,
+      "sha256": "46d149b9075e13809860434aa0e31fdd42055778a5f07f41a218b4e0c39c9d34"
+    },
+    "reference-runs/vintage-wildjailbreak/optimizer-state-stripped.json": {
+      "bytes": 763,
+      "sha256": "a3da940e8cd5a00a839ac48b60ee65b5b0c766bbc159d67bf41d889f6755de8b"
+    },
+    "reference-runs/vintage-wildjailbreak/run.json": {
+      "bytes": 11075,
+      "sha256": "a7ec28e0872d4d0567c2e3d19e2a2a2fd5ba4b2998769a09613ad9f58a4e2afd"
+    },
+    "reference-runs/vintage-wildjailbreak/training.jsonl": {
+      "bytes": 162389,
+      "sha256": "07c5e6dec1750f12f17cb7581737d90e3d7ec90bf3623e3bba4b3e35cd29fec4"
+    },
+    "reference-runs/web-aya/optimizer-state-stripped.json": {
+      "bytes": 743,
+      "sha256": "63c4d3bfddcbb3c204e92d16b76e1a0b88ec314640bf66ca1494f891e1e3b4d2"
+    },
+    "reference-runs/web-aya/run.json": {
+      "bytes": 11051,
+      "sha256": "86ff4cb48fb1130c94818437fe1121e63d7e5c25f1ff16aef66e92dcc4d50080"
+    },
+    "reference-runs/web-aya/training.jsonl": {
+      "bytes": 159030,
+      "sha256": "dd140b2f3cff39079a2335a85ebb81f4f6f9ab94c7622a08a88013c6a0dfb7f7"
+    },
+    "reference-runs/web-coconot/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "fa0f973c0c61978286152e0a78b7fa4df6035639cd3763d1bedb2fd5b707bb44"
+    },
+    "reference-runs/web-coconot/run.json": {
+      "bytes": 11056,
+      "sha256": "1c56bf46d16a8869fd3042e487c3a87603c46ba69f143aa7accb1eee893aa65b"
+    },
+    "reference-runs/web-coconot/training.jsonl": {
+      "bytes": 28705,
+      "sha256": "e4bc839536ec57c4cbe17fd073b9fca44d2bb840e76ba09a26766932a50882b5"
+    },
+    "reference-runs/web-evol-codealpaca/optimizer-state-stripped.json": {
+      "bytes": 767,
+      "sha256": "4399b8d81d88dc95e2024977cec00c938701a2708d367c5c583a4cf29200a35c"
+    },
+    "reference-runs/web-evol-codealpaca/run.json": {
+      "bytes": 11087,
+      "sha256": "b00a446fb413869d3bed1fce6fbd4e455d89f4394d6cda0174e9b36cca46e16b"
+    },
+    "reference-runs/web-evol-codealpaca/training.jsonl": {
+      "bytes": 162796,
+      "sha256": "65bebaaf9fe49a307ba9ec14a7ce64eead65b99c4f8099a9526bf5050b9570df"
+    },
+    "reference-runs/web-flan-v2/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "44b59e0ce6a8f8391d5ae76fe14b34ca9be36965d4b2e394857647bafaec05cd"
+    },
+    "reference-runs/web-flan-v2/run.json": {
+      "bytes": 11063,
+      "sha256": "3e200008acaea7b8ab2dd77a3cd7e86b1a0377707ebfd8266a84797057bd9290"
+    },
+    "reference-runs/web-flan-v2/training.jsonl": {
+      "bytes": 109537,
+      "sha256": "a3c2ddcb33edffb362b71eb0d5872e3c2202fa5b1134273a3f80bd3cccf79c5a"
+    },
+    "reference-runs/web-no-robots/optimizer-state-stripped.json": {
+      "bytes": 754,
+      "sha256": "65fa3468a1f949ba784671c5571ef142727d838bf0bcb8269b1397a5cae3d125"
+    },
+    "reference-runs/web-no-robots/run.json": {
+      "bytes": 11064,
+      "sha256": "e392ce49a2bac83f6efa4e04c836d9a3e48e8937d7a6a952c46a759e430ae9d3"
+    },
+    "reference-runs/web-no-robots/training.jsonl": {
+      "bytes": 62158,
+      "sha256": "72862a35c1eb912fc424f46fd82549c3026c19ff87e49aab3f61f8d13157cbe1"
+    },
+    "reference-runs/web-numinamath-tir/optimizer-state-stripped.json": {
+      "bytes": 765,
+      "sha256": "37d31da148fe27ce4e52ed6cc6c1c598c88f90de7a15a387478c54972edc127b"
+    },
+    "reference-runs/web-numinamath-tir/run.json": {
+      "bytes": 11082,
+      "sha256": "902e82ded8b621a0edac7bf84e7b131bba420d1cddf2302c14040c818248ccb1"
+    },
+    "reference-runs/web-numinamath-tir/training.jsonl": {
+      "bytes": 156239,
+      "sha256": "7ac52e8965193f9c7ff735a2ca1a0af8fa928d8c141e7219d7cf191aea233cc1"
+    },
+    "reference-runs/web-oasst1/optimizer-state-stripped.json": {
+      "bytes": 749,
+      "sha256": "9cd670f05e84f47e195969be1f8b0623d0f08d4ad1eb8452302a55a4bcdf1f77"
+    },
+    "reference-runs/web-oasst1/run.json": {
+      "bytes": 11057,
+      "sha256": "107c7e96656951499fec847b9e659df65b9c40cda4a20a05114dc6f0c3fd4a44"
+    },
+    "reference-runs/web-oasst1/training.jsonl": {
+      "bytes": 96905,
+      "sha256": "c776e66a08aa53a7ecaf4ed3c915d6304686dc6a969a083b01dcf1dd9642f9fb"
+    },
+    "reference-runs/web-openmath-gsm8k/optimizer-state-stripped.json": {
+      "bytes": 765,
+      "sha256": "480aba7c49fae920f3bc87052af081b7bd4094af0004f5fce48ac91109c7d069"
+    },
+    "reference-runs/web-openmath-gsm8k/run.json": {
+      "bytes": 11083,
+      "sha256": "3ec92bf343fc2d63684e82b2680b87d215fd52d25eba754a62b6bb574c961355"
+    },
+    "reference-runs/web-openmath-gsm8k/training.jsonl": {
+      "bytes": 162092,
+      "sha256": "e7f33982c3034bb84f29a399e8370d9e962f991343402fc42971cb67ddaa696a"
+    },
+    "reference-runs/web-personahub-algebra/optimizer-state-stripped.json": {
+      "bytes": 773,
+      "sha256": "62f0b655de3cec0148502f528e2f8306b15c7b750aff48da51ef75bf0158a574"
+    },
+    "reference-runs/web-personahub-algebra/run.json": {
+      "bytes": 11094,
+      "sha256": "7b763c172fd76e8975fcc96287c5f7773d30156731c7faf671a09c0d2b23d0a3"
+    },
+    "reference-runs/web-personahub-algebra/training.jsonl": {
+      "bytes": 161841,
+      "sha256": "269e719560abed3a4a8c66a09a09ccfbca667bc0035757161ca12e8546a16ff6"
+    },
+    "reference-runs/web-personahub-code/optimizer-state-stripped.json": {
+      "bytes": 767,
+      "sha256": "e44365cca30fba37c4b07c68c83efc8f32fd4bf099fa8b73ced9b0641f71ba78"
+    },
+    "reference-runs/web-personahub-code/run.json": {
+      "bytes": 11088,
+      "sha256": "5dd07c147f3d4f5c44000fb39f7778a59c03d7a82844d65c00c3af419dcf5993"
+    },
+    "reference-runs/web-personahub-code/training.jsonl": {
+      "bytes": 166768,
+      "sha256": "812b3598f8bac0e322d1920a2ad5cc4584689febf2d1805440c3f5029e494f7a"
+    },
+    "reference-runs/web-personahub-grade-math/optimizer-state-stripped.json": {
+      "bytes": 778,
+      "sha256": "d4237fe05e590a36058591e46ac5d7762142ff92c6c1eb5644803f6cec8e61c4"
+    },
+    "reference-runs/web-personahub-grade-math/run.json": {
+      "bytes": 11103,
+      "sha256": "dfc0662dc8cc35b6f4c7c4675fd9c5631eca614c36ed8ac4682768ac614f1bbf"
+    },
+    "reference-runs/web-personahub-grade-math/training.jsonl": {
+      "bytes": 167472,
+      "sha256": "d7aa5f12c7909caba4c4ef3dae988719e53135089e5f02335131bcd9c4e14f00"
+    },
+    "reference-runs/web-personahub-if/optimizer-state-stripped.json": {
+      "bytes": 763,
+      "sha256": "e5a356f8845e8bfeaefc66c1e73bf55a7e57a81d6d8b6fca0200caff73b6491b"
+    },
+    "reference-runs/web-personahub-if/run.json": {
+      "bytes": 11081,
+      "sha256": "db35ef543265c1c1e8d488bad2f0c8003e1f54d1934f1413a90a0939bb208e54"
+    },
+    "reference-runs/web-personahub-if/training.jsonl": {
+      "bytes": 158658,
+      "sha256": "7a5c0452ffad28131e7c5f1470318220cd95ebd31bfa77270c4e101a9d196a6a"
+    },
+    "reference-runs/web-personahub-math/optimizer-state-stripped.json": {
+      "bytes": 766,
+      "sha256": "88f6cdf2a75fc777dd92c8a9fb1ad565568c77660376be37126d49acfa517580"
+    },
+    "reference-runs/web-personahub-math/run.json": {
+      "bytes": 11086,
+      "sha256": "cf0775934cf28ea2f480c163ce56845e4a2aeb793a37531156b60228e8f8ec90"
+    },
+    "reference-runs/web-personahub-math/training.jsonl": {
+      "bytes": 160395,
+      "sha256": "6c2aee65c40483d660cc2353a8859914e9207fd7a92152c79203fae496ee88f1"
+    },
+    "reference-runs/web-sciriff/optimizer-state-stripped.json": {
+      "bytes": 751,
+      "sha256": "91cfb01234c026ccc44962989022c26989084070f89667fe1ece84a554672a65"
+    },
+    "reference-runs/web-sciriff/run.json": {
+      "bytes": 11062,
+      "sha256": "852a1dc5d4c8298df537894ecd10143ce2763697b12467f7d124d230b53a47b2"
+    },
+    "reference-runs/web-sciriff/training.jsonl": {
+      "bytes": 43386,
+      "sha256": "df57a006a1c500660ae83827510157c43cf217680578bb84e3d0c5eb7ca0b75a"
+    },
+    "reference-runs/web-tablegpt/optimizer-state-stripped.json": {
+      "bytes": 753,
+      "sha256": "c920fe59641c88d1301a6d604e91837da8e101fad948949d9fa3345766c7122f"
+    },
+    "reference-runs/web-tablegpt/run.json": {
+      "bytes": 11060,
+      "sha256": "f993e3849234f2f326dd17e7c460ce1474240aeb030a8e92fa94cae58af045f4"
+    },
+    "reference-runs/web-tablegpt/training.jsonl": {
+      "bytes": 16796,
+      "sha256": "22690b17646bba4f7568a9a33681d833d45b0adcdc4df7da5fe98067d179b77a"
+    },
+    "reference-runs/web-tulu/optimizer-state-stripped.json": {
+      "bytes": 749,
+      "sha256": "53c265e41a8c6d6b611170826d957ba3f4fbe6b7b2a048a7b436b643cda6f4af"
+    },
+    "reference-runs/web-tulu/run.json": {
+      "bytes": 11146,
+      "sha256": "1e4e4788b0fae1393e7c1d9fb92c2114b0a34547772772d449c8dc4b2f5e1d98"
+    },
+    "reference-runs/web-tulu/training.jsonl": {
+      "bytes": 152312,
+      "sha256": "d96993b6be73181eb76e481ccd2e4b60c1fcf9bd741826e718f3ef975ecb060f"
+    },
+    "reference-runs/web-vintage/optimizer-state-stripped.json": {
+      "bytes": 754,
+      "sha256": "61ff10591244105d64cc94e6ccb3ee30771b005c286d1e4909db0a8a5d183280"
+    },
+    "reference-runs/web-vintage/run.json": {
+      "bytes": 11056,
+      "sha256": "0413ba4964ee478f644e48e79d46feed83046622d0ff9c890ab86048416ef48b"
+    },
+    "reference-runs/web-vintage/training.jsonl": {
+      "bytes": 163449,
+      "sha256": "68f2245afd69c679677baa05061adc09ab6bd0acc4385199a1520a38e447ef59"
+    },
+    "reference-runs/web-wildchat/optimizer-state-stripped.json": {
+      "bytes": 753,
+      "sha256": "a61e2bea2baad5afe47c9914040fb422cd5845dae9aad034f9c9b8c3981debe5"
+    },
+    "reference-runs/web-wildchat/run.json": {
+      "bytes": 11065,
+      "sha256": "4fdcc2dfd93fdc43b57b7a1046d09ce41459eb5a3f947fe3f9942ac721e4e1a1"
+    },
+    "reference-runs/web-wildchat/training.jsonl": {
+      "bytes": 159194,
+      "sha256": "a7ed8a4f65df911b0c2ad47a62da69d27dcb5b1b104addbe8309fc25f7acdcde"
+    },
+    "reference-runs/web-wildguardmix/optimizer-state-stripped.json": {
+      "bytes": 761,
+      "sha256": "67e9b91dc22c008cf9341de4add1a2422e927bacc1d2f00a2a47314a096960dd"
+    },
+    "reference-runs/web-wildguardmix/run.json": {
+      "bytes": 11078,
+      "sha256": "3f9f910ace91594151402c97bae3b459680022f7d6a40a80d010b12f0e1020e5"
+    },
+    "reference-runs/web-wildguardmix/training.jsonl": {
+      "bytes": 151670,
+      "sha256": "764746453095716d90d03c80bf70a248dbfe4090daf5db1e3ddfaecfdd2092a4"
+    },
+    "reference-runs/web-wildjailbreak/optimizer-state-stripped.json": {
+      "bytes": 763,
+      "sha256": "5fe4adfeebd86020f231d2ceb6e12ada8ddfa790fa34de3c5d8a0bd1bd681fe3"
+    },
+    "reference-runs/web-wildjailbreak/run.json": {
+      "bytes": 11078,
+      "sha256": "c8148b07b649a4f202019fae349188ed6b574a380e4926ad2a0308b89c82ea34"
+    },
+    "reference-runs/web-wildjailbreak/training.jsonl": {
+      "bytes": 162203,
+      "sha256": "9a58236c399be5329cab4ca958cd05f9bd32735d92922761628f6df0496ed9af"
+    },
+    "references/fewshot/condition-scores.csv": {
+      "bytes": 6240463,
+      "sha256": "ee3e70d771d2b02bec6c7bad4075f51baba4638cc34cce496af9ea1941ecc9f6"
+    },
+    "references/fewshot/control-contrasts.csv": {
+      "bytes": 195665,
+      "sha256": "4b38fb0e692bc359ab961db219ea9e8e593061d9ae5751826c106206ab2c34c4"
+    },
+    "references/fewshot/high-minus-low.csv": {
+      "bytes": 87038,
+      "sha256": "516359cc2558ed56c8ac99ed9412341d34915bacf3057c85be8598dd6aecf8f5"
+    },
+    "references/fewshot/sft-comparison.csv": {
+      "bytes": 2756,
+      "sha256": "455fe4197a85c10aa41b197f1f3ef2cf149a5717816ca06354e4e8564ee4ff77"
+    },
+    "references/trait-tulu-categories-20260918-trajectories.csv": {
+      "bytes": 11723134,
+      "sha256": "031b39784863c07a3905ed06c47c37c5125613aa5517f5ee21f9f9cbde2d373f"
+    },
+    "references/trait-web-tulu-categories-20260918-trajectories.csv": {
+      "bytes": 11536102,
+      "sha256": "66e287e8e2b23a6d567bc83a819201712909eeae5473d3e86ac9884b69f20ab3"
+    },
+    "references/vintage-tulu-0-bare.jsonl": {
+      "bytes": 27612315,
+      "sha256": "be98b247a0093f7cb3bc32ad0c058824ad567e971b79df68206d00ec49ea1e3c"
+    },
+    "references/vintage-tulu-0-chat.jsonl": {
+      "bytes": 27822445,
+      "sha256": "ca4d2548c4e1f313f79b0e2e22b1893312edd65175fdb35e44e322006fbf148a"
+    },
+    "references/vintage-tulu-1000-bare.jsonl": {
+      "bytes": 27608038,
+      "sha256": "f4e0f0c7dd8096a8ada67e723cca626e485e36a9ff0fb5174b097c513acc12da"
+    },
+    "references/vintage-tulu-1000-chat.jsonl": {
+      "bytes": 27816242,
+      "sha256": "19ed106cf2fdab06387129aa775efce0fa1aed7d15ec88f1d5f7103082cd8381"
+    },
+    "references/vintage-vintage-0-bare.jsonl": {
+      "bytes": 27612315,
+      "sha256": "be98b247a0093f7cb3bc32ad0c058824ad567e971b79df68206d00ec49ea1e3c"
+    },
+    "references/vintage-vintage-0-chat.jsonl": {
+      "bytes": 27822445,
+      "sha256": "ca4d2548c4e1f313f79b0e2e22b1893312edd65175fdb35e44e322006fbf148a"
+    },
+    "references/vintage-vintage-1000-bare.jsonl": {
+      "bytes": 27612595,
+      "sha256": "aff16f8817d78447e58080ae54e74edc2cc57c3bc3952c006273e477ad9a7ada"
+    },
+    "references/vintage-vintage-1000-chat.jsonl": {
+      "bytes": 27821647,
+      "sha256": "a97a8921ec89a31984a3890d9c8a733128c92df6446a4f7ced256c246208ebe7"
+    },
+    "references/web-tulu-0-bare.jsonl": {
+      "bytes": 27610426,
+      "sha256": "ae4a84ee5890b05e7a44283cd5a9cb06cdbdf2f20664b88d578798bbb8d2263c"
+    },
+    "references/web-tulu-0-chat.jsonl": {
+      "bytes": 27818352,
+      "sha256": "32b8f9b7f1560490cee6fbcfa969a724cc6c5e1255f49712ca7a9f8a6c60335a"
+    },
+    "references/web-tulu-1000-bare.jsonl": {
+      "bytes": 27611163,
+      "sha256": "28be8d252ba500d3eb836753f77833246cd30a4164f06855d6e4895c5e86a622"
+    },
+    "references/web-tulu-1000-chat.jsonl": {
+      "bytes": 27819822,
+      "sha256": "a3c479a24a3b5e45627c9297102517ba8bde4ea59bb3fd9a66d24ba3ee6f34f5"
+    },
+    "references/web-vintage-0-bare.jsonl": {
+      "bytes": 27610426,
+      "sha256": "ae4a84ee5890b05e7a44283cd5a9cb06cdbdf2f20664b88d578798bbb8d2263c"
+    },
+    "references/web-vintage-0-chat.jsonl": {
+      "bytes": 27818352,
+      "sha256": "32b8f9b7f1560490cee6fbcfa969a724cc6c5e1255f49712ca7a9f8a6c60335a"
+    },
+    "references/web-vintage-1000-bare.jsonl": {
+      "bytes": 27609199,
+      "sha256": "9f230ec156a98cbd0a01be32fa66cf188786ce6598f904903dcad43ba3ae9497"
+    },
+    "references/web-vintage-1000-chat.jsonl": {
+      "bytes": 27815624,
+      "sha256": "902f4717d9a9af8a02423f34ad9d41a8162adb7b96f1d43077c76f0791326d2a"
+    },
+    "selections.json.gz": {
+      "bytes": 69963584,
+      "sha256": "c63acb9e3375f665b582db49412911f27af075cb5f4ffe3a36293d07ebe9f89e"
+    },
+    "tokenized/vintage-vintage.parquet": {
+      "bytes": 9671620,
+      "sha256": "e28f64ee13bd25ac80d120c9595274683c1bd595d09c38f46d857799a724a708"
+    },
+    "tokenized/web-vintage.parquet": {
+      "bytes": 9773169,
+      "sha256": "174da706abe3d1a3a2210774b3bb1b5bdbe0e65cfb3924150d3414b5b7bae8db"
+    },
+    "trait.parquet": {
+      "bytes": 2623974,
+      "sha256": "95414a84723eecf7a750afc4ab90aa06333e4d93baa855d5477d59499d6bbd78"
+    },
+    "upstream/TRAIT-README.md": {
+      "bytes": 1740,
+      "sha256": "d4e17d8457cfa59055f60ec9384ae944a68e999beb6fe023fcc3758e8ae7475b"
+    },
+    "upstream/TULU3-README.md": {
+      "bytes": 7707,
+      "sha256": "1b6fff37d3f206b70086d9d65015a75dfb98b603a99af7330b0d44cd198464d6"
+    },
+    "validation/adapter-roundtrip.json": {
+      "bytes": 7574,
+      "sha256": "490768e48c8724d2a9629ada4e7b8f4630c1094cdc905bea7cf2cd66cad1db09"
+    },
+    "validation/fewshot-smoke.json": {
+      "bytes": 167,
+      "sha256": "160f69ba006bc6186cb65ad3acbca73e98b3fdffda07e1087f35b1aed14bc09e"
+    },
+    "validation/gpu-parity.json": {
+      "bytes": 13084,
+      "sha256": "8a14223d42d2193526c47e9cd66181fdb542799adfcedc4fc63a1b59a8be3c99"
+    },
+    "validation/prepared-data.json": {
+      "bytes": 1999,
+      "sha256": "87c41509350e62b1547ce0cc2af0b46c80d037efc36cce9986ef10182c339daf"
+    },
+    "validation/slurm-accounting.txt": {
+      "bytes": 194,
+      "sha256": "8b4d7f46d1fa9eb1ccf89928824e45ecd767ce4742b6671f35f81ae1ed5c30d8"
+    },
+    "validation/training-smoke.json": {
+      "bytes": 10986,
+      "sha256": "51f0f9d211dad65fd70d7b752497c49287c7731cd6ad7b27edd03370ccb6192e"
+    },
+    "vintage-sft-original.parquet": {
+      "bytes": 14129033,
+      "sha256": "add498d4fe1526d519ec458bdd603b7502019cd60716b267a61a86932bb557df"
+    },
+    "vintage-sft.parquet": {
+      "bytes": 14222290,
+      "sha256": "255404c190e617775e11450592d564f3056cd7f18dfdf988583926f4253fb2b1"
+    }
+  },
+  "finalization_job_id": "19671"
+}

@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-numinamath-tir/checkpoints/step-000256/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "f46b9dfecf6dbbb8faf53745a9dc72aae8d99db5a02a4a60cb1a37d187718e85",
+  "completed_unix_seconds": 1789930681.9270399,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-numinamath-tir/checkpoints/step-000256/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "b6f9e3fc22e5b651cddf94a1cf7a28f0857afb4b825ee6461b114bad97f8e044",
+  "status": "validated"
+}

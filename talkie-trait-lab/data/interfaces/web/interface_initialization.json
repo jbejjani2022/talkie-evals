@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-01T20:07:38.016277+00:00",
+  "source_model": "/data/talkie-base-experiments/transformers/talkie-web-13b-base",
+  "output": "/data/talkie-base-experiments/transformers/talkie-web-13b-base-atomic-interface",
+  "seed": 20260828,
+  "initialization": "independent random normal",
+  "mean_resizing": false,
+  "initializer_range": 0.02,
+  "old_vocab_size": 65536,
+  "new_vocab_size": 65539,
+  "role_token_ids": {
+    "<|system|>": 65536,
+    "<|user|>": 65537,
+    "<|assistant|>": 65538
+  },
+  "eos_token": "<|endoftext|>",
+  "eos_token_id": 65535,
+  "training_steps": 0
+}

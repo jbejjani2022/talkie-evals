@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-wildguardmix/checkpoints/step-000249/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "21929e07650938ebe0fcef12824d3257c88417960a18461a8ed56c73fc4f504f",
+  "completed_unix_seconds": 1789931087.6383002,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-wildguardmix/checkpoints/step-000249/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "c6f58af9f08c95f3b90ba80df8baf5a0ebb983dd0789104e34ce2f500b215e41",
+  "status": "validated"
+}

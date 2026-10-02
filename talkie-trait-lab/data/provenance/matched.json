@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "seed": 20260915,
+  "models": {
+    "vintage": "/data/talkie-base-experiments/transformers/talkie-1930-13b-base-atomic-interface",
+    "web": "/data/talkie-base-experiments/transformers/talkie-web-13b-base-atomic-interface"
+  },
+  "context_limit": 4096,
+  "selection": "uniform random Tulu training permutation prefix closest to mean normalized Vintage/Web assistant-loss-token budget; same rows across families",
+  "mask": "repository atomic assistant masks; all assistant turns and EOS; causal shift applied",
+  "source_sha256": {
+    "vintage": "add498d4fe1526d519ec458bdd603b7502019cd60716b267a61a86932bb557df",
+    "tulu_manifest": "9d3f6a7aeb63b6a912a72df3b792b9b804c45399f6281a7eb6449e57e0c4f94e",
+    "trait": "95414a84723eecf7a750afc4ab90aa06333e4d93baa855d5477d59499d6bbd78"
+  },
+  "counts": {
+    "vintage": 25938,
+    "tulu": 9441
+  },
+  "budgets": {
+    "vintage": 4617250,
+    "web": 4732607
+  },
+  "actual": {
+    "vintage": {
+      "vintage": {
+        "rows": 25938,
+        "loss_tokens": 4617250,
+        "input_tokens": 5111755
+      },
+      "tulu": {
+        "rows": 9441,
+        "loss_tokens": 4739785,
+        "input_tokens": 6660568
+      },
+      "tulu_relative_error": 0.026538524013211218
+    },
+    "web": {
+      "vintage": {
+        "rows": 25938,
+        "loss_tokens": 4732607,
+        "input_tokens": 5207790
+      },
+      "tulu": {
+        "rows": 9441,
+        "loss_tokens": 4606774,
+        "input_tokens": 6438040
+      },
+      "tulu_relative_error": -0.026588516646322002
+    }
+  },
+  "files": {
+    "tulu-messages.parquet": {
+      "bytes": 10766707,
+      "sha256": "0532d60a1147a8b14d392213b03a827e6f0b9fdf2608ade748ffe1f03e98532f"
+    },
+    "vintage-messages.parquet": {
+      "bytes": 14222290,
+      "sha256": "255404c190e617775e11450592d564f3056cd7f18dfdf988583926f4253fb2b1"
+    },
+    "vintage-tulu.parquet": {
+      "bytes": 9980384,
+      "sha256": "6c444fe7cf649ef20f5aad8c481b21cb8117f01c5ea8ba8589717b615b3802d1"
+    },
+    "vintage-vintage.parquet": {
+      "bytes": 9671620,
+      "sha256": "e28f64ee13bd25ac80d120c9595274683c1bd595d09c38f46d857799a724a708"
+    },
+    "web-tulu.parquet": {
+      "bytes": 9100772,
+      "sha256": "cf1395103c6834ba913c63c7a7ed53a1e0f5d3da48a0c2a7c2425d2c4b2c3d37"
+    },
+    "web-vintage.parquet": {
+      "bytes": 9773169,
+      "sha256": "174da706abe3d1a3a2210774b3bb1b5bdbe0e65cfb3924150d3414b5b7bae8db"
+    }
+  }
+}

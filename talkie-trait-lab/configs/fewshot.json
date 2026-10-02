@@ -1,0 +1,11 @@
+{
+  "n_values": [0, 1, 2, 4, 8, 16, 32],
+  "banks_per_trait": 5,
+  "balanced_controls": true,
+  "reverse_order_n": 8,
+  "evaluation_split": "validation",
+  "boundary_buffer_tokens": 8,
+  "chunk_rows": 128,
+  "bootstrap_replicates": 2000,
+  "seed": 20260925
+}

@@ -1,0 +1,14 @@
+{
+  "adapter_tensor_bytes": 249364480,
+  "checkpoint": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-openmath-gsm8k/checkpoints/step-000265/checkpoint.pt",
+  "compacted_bytes": 249575243,
+  "compacted_sha256": "0505bc90c957761629ad6a13b4b40e9ca21b4cc53fd503f05b03f9ba525fd2c4",
+  "completed_unix_seconds": 1789930753.8960483,
+  "optimizer_tensor_bytes_removed": 498731200,
+  "original_validation": "/data/talkie-base-experiments/runs/trait-web-tulu-categories-20260918/web-openmath-gsm8k/checkpoints/step-000265/validation.json",
+  "original_validation_preserved": true,
+  "schema_version": 1,
+  "source_bytes": 748765549,
+  "source_sha256": "4b78e4fd8ca070f4c6e66cd9fdc3ad94c604c0bd3d01973524ee8aaa789f5eaa",
+  "status": "validated"
+}

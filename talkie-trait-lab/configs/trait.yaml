@@ -1,0 +1,6 @@
+tasks:
+  - name: trait-profile
+    likelihood_prompt_templates:
+      bare: "Question: {prompt}\n\nAnswer:"
+      chat: "<|user|>\n{prompt}\n<|assistant|>\nAnswer:"
+    choice_continuation_prefix: " "
