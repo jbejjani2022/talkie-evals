@@ -85,14 +85,22 @@ STOPS = ('<|endoftext|>', '<|user|>', '<|assistant|>', '<|system|>', '\n\nQuesti
 
 
 @torch.inference_mode()
-def generate(model, tokenizer, prompts, max_new_tokens=80, batch_size=32):
-    """Greedy continuations of the exact likelihood prompts, cut at the first turn/question boundary."""
+def generate(model, tokenizer, prompts, max_new_tokens=80, batch_size=32, max_tokens=12000):
+    """Greedy continuations of the exact likelihood prompts, cut at the first turn/question boundary.
+
+    Batches are capped by padded tokens (prompt + new tokens): the KV cache of a 13B model is ~0.8 MB/token.
+    """
     device = next(model.parameters()).device
     encoded = [tokenizer.encode(p, add_special_tokens=False) for p in prompts]
     order = sorted(range(len(prompts)), key=lambda i: len(encoded[i]))
     out = [None] * len(prompts)
-    for start in range(0, len(order), batch_size):
-        batch = order[start:start + batch_size]
+    batches, current = [], []
+    for i in order:
+        if current and (len(current) >= batch_size or (len(current) + 1) * (len(encoded[i]) + max_new_tokens) > max_tokens):
+            batches.append(current); current = []
+        current.append(i)
+    batches.append(current)
+    for batch in batches:
         width = max(len(encoded[i]) for i in batch)
         ids = torch.full((len(batch), width), tokenizer.eos_token_id, dtype=torch.long)
         mask = torch.zeros_like(ids)
