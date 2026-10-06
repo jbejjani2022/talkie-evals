@@ -1,0 +1,14 @@
+{
+ "bare/vintage-base": 0.8251783204015223,
+ "bare/vintage-tulu": 0.45244118951965584,
+ "bare/vintage-vsft": 0.8203341183194881,
+ "bare/web-base": 0.5825462022303554,
+ "bare/web-tulu": 0.6164531787536186,
+ "bare/web-vsft": -0.11071111541512685,
+ "chat/vintage-base": 0.3082116822303836,
+ "chat/vintage-tulu": -0.019332387846696306,
+ "chat/vintage-vsft": -0.27758125901201647,
+ "chat/web-base": 0.6391294262118606,
+ "chat/web-tulu": -0.1357752764889229,
+ "chat/web-vsft": -0.3474369561482305
+}
