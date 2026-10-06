@@ -83,7 +83,8 @@ def main():
         return
     from vllm import LLM, SamplingParams
     llm = LLM(a.model, tensor_parallel_size=a.tensor_parallel, max_model_len=4096, enable_prefix_caching=True,
-              limit_mm_per_prompt={'image': 0, 'video': 0}, seed=0)
+              limit_mm_per_prompt={'image': 0, 'video': 0}, seed=0,
+              max_num_seqs=256)  # hybrid linear attention: one Mamba-state block per running sequence
     params = SamplingParams(temperature=0, max_tokens=64)
     provenance = {'judge': a.model, 'rubric_sha256': hashlib.sha256(RUBRIC.encode()).hexdigest(),
                   'job_id': os.environ.get('SLURM_JOB_ID')}
