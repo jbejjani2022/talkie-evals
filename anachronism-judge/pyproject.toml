@@ -5,10 +5,7 @@ description = "LLM judge labelling behavior-eval items as historically plausible
 requires-python = ">=3.12,<3.13"
 dependencies = ["vllm==0.25.0"]
 
+# PyPI wheels, not the Killarney wheelhouse: the wheelhouse vllm+computecanada build depends on
+# module-provided dummy packages (opencv-noinstall) that uv cannot resolve outside `module load`.
 [tool.uv]
 package = false
-find-links = [
-  "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3",
-  "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/generic",
-  "/cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic",
-]
