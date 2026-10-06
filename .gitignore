@@ -4,3 +4,7 @@ logs/
 results/
 # Final figures, findings and summary tables are committed (raw per-item scores are not)
 !/results/
+
+# Local working files, not for the public repo
+talkie-trait-lab/results_slides.pdf
+new_evals_lab.md
