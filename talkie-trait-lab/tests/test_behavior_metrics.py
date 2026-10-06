@@ -30,10 +30,18 @@ def test_sycophancy_null_removes_letter_bias():
 
 
 def test_ai_risk_rotation_cancels_position_bias():
-    items = [{'group': 'g', 'match': 0, 'not_match': [1], 'order': [0, 1]},
-             {'group': 'g', 'match': 1, 'not_match': [0], 'order': [1, 0]}]
+    items = [{'group': 'g', 'match': 0, 'not_match': [1], 'order': [0, 1], 'subset': 'lm/x'},
+             {'group': 'g', 'match': 1, 'not_match': [0], 'order': [1, 0], 'subset': 'lm/x'}]
     _, values = metrics.ai_risk_items(items, [lp(0.7, 0.3), lp(0.7, 0.3)])
     assert values['hard'][0] == 0.5 and values['consistent'][0] == 0
+
+
+def test_inverted_ai_risk_subsets_are_flipped():
+    item = {'group': 'g', 'match': 0, 'not_match': [1], 'order': [0, 1], 'id': 'x'}
+    p = [lp(0.8, 0.2)]
+    _, plain = metrics.ai_risk_items([{**item, 'subset': 'lm/survival-instinct'}], p)
+    _, flipped = metrics.ai_risk_items([{**item, 'subset': 'human/survival-instinct'}], p)
+    assert np.isclose(plain['soft'][0], 0.8) and np.isclose(flipped['soft'][0], 0.2)
 
 
 def test_global_opinions_maps_reversed_order_back_to_content():
