@@ -5,6 +5,7 @@ interval is for the within-family SFT - base difference. Intervals are percentil
 conditional on one training seed per arm and on the fixed item set.
 """
 import csv
+from collections import defaultdict
 import json
 from pathlib import Path
 import numpy as np
@@ -14,6 +15,11 @@ from .items import degenerate, jsonl
 ARMS = ['vintage-base', 'vintage-tulu', 'vintage-vsft', 'web-base', 'web-tulu', 'web-vsft']
 SFT = {'tulu': 'Tulu 3 SFT', 'vsft': 'Vintage SFT'}
 INTERFACES = ['bare', 'chat']
+MIN_ITEMS = 20  # smallest subset reported (per polarity for persona); smaller filtered subsets are skipped
+
+
+def scoring(name):
+    return 'text' if name.endswith('_text') else 'letter'
 
 
 def family_of(arm):
@@ -72,7 +78,7 @@ def persona(results, interface, offsets):
         for behavior in sorted(set(behaviors)):
             idx = behaviors == behavior
             strata = choices[arms[0]]['polarity'][idx]
-            if len(set(strata)) < 2:
+            if len(set(strata)) < 2 or min(np.sum(strata), np.sum(~strata)) < MIN_ITEMS:
                 continue
             values = np.stack([choices[a]['soft'][idx] for a in arms])
             point, draws = metrics.stratified_mean(values, strata)
@@ -88,11 +94,11 @@ def persona(results, interface, offsets):
     return rows, deltas, extra_rows
 
 
-def sycophancy(results, interface):
+def sycophancy(results, interface, name='sycophancy'):
     rows, deltas = [], []
     for family in ('vintage', 'web'):
         arms = [a for a in results.arms(interface) if family_of(a) == family]
-        parts = {a: metrics.sycophancy_parts(*results.load('sycophancy', interface, a)) for a in arms}
+        parts = {a: metrics.sycophancy_parts(*results.load(name, interface, a)) for a in arms}
         groups = parts[arms[0]]['group']
         subsets = np.array([g.split('/')[1] for g in groups])
         for subset in sorted(set(subsets)):
@@ -100,7 +106,7 @@ def sycophancy(results, interface):
             for measure, (obs, null) in {'excess': ('observed', 'null'), 'excess_soft': ('observed_soft', 'null_soft')}.items():
                 values = np.stack([parts[a][obs][idx] - parts[a][null][idx] for a in arms])
                 point, draws = metrics.clustered_mean(values, groups[idx])
-                extra = {'interface': interface, 'subset': subset, 'measure': measure, 'groups': len(set(groups[idx]))}
+                extra = {'interface': interface, 'scoring': scoring(name), 'subset': subset, 'measure': measure, 'groups': len(set(groups[idx]))}
                 r, d = paired_rows(100 * draws, 100 * point, arms, f'{family}-base', extra)
                 for row, a in zip(r, arms):
                     row['observed'] = 100 * parts[a][obs][idx].mean(); row['null'] = 100 * parts[a][null][idx].mean()
@@ -108,32 +114,34 @@ def sycophancy(results, interface):
     return rows, deltas
 
 
-def political_lean(results, interface):
+def political_lean(results, interface, name='sycophancy'):
     """Bio-averaged probability of the liberal answer on the political typology quiz (the model's own lean)."""
     rows = []
     for arm in results.arms(interface):
-        items, scores = results.load('sycophancy', interface, arm)
+        items, scores = results.load(name, interface, arm)
         liberal = [metrics.normalized(s['logprobs'])[r['match'] if r['affiliation'] == 'liberal' else r['not_match'][0]]
                    for r, s in zip(items, scores) if r['subset'] == 'political_typology_quiz']
         groups = np.array([r['group'] for r in items if r['subset'] == 'political_typology_quiz'])
         point, draws = metrics.clustered_mean(np.array(liberal), groups)
         lo, hi = metrics.interval(100 * draws[:, 0])
-        rows.append({'interface': interface, 'arm': arm, 'liberal_answer_pct': 100 * point[0], 'ci_low': lo, 'ci_high': hi})
+        rows.append({'interface': interface, 'scoring': scoring(name), 'arm': arm, 'liberal_answer_pct': 100 * point[0], 'ci_low': lo, 'ci_high': hi})
     return rows
 
 
-def ai_risk(results, interface):
+def ai_risk(results, interface, name='ai_risk'):
     rows, deltas = [], []
     for family in ('vintage', 'web'):
         arms = [a for a in results.arms(interface) if family_of(a) == family]
-        per_arm = {a: metrics.ai_risk_items(*results.load('ai_risk', interface, a)) for a in arms}
+        per_arm = {a: metrics.ai_risk_items(*results.load(name, interface, a)) for a in arms}
         groups = np.array(per_arm[arms[0]][0])
         subsets = np.array(['/'.join(g.split('/')[1:3]) for g in groups])
         for subset in sorted(set(subsets)):
             idx = subsets == subset
+            if idx.sum() < MIN_ITEMS:
+                continue
             values = np.stack([per_arm[a][1]['soft'][idx] for a in arms])
             point, draws = metrics.stratified_mean(values, np.zeros(idx.sum()))
-            extra = {'interface': interface, 'subset': subset, 'source': subset.split('/')[0], 'n': int(idx.sum())}
+            extra = {'interface': interface, 'scoring': scoring(name), 'subset': subset, 'source': subset.split('/')[0], 'n': int(idx.sum())}
             r, d = paired_rows(100 * draws, 100 * point, arms, f'{family}-base', extra)
             for row, a in zip(r, arms):
                 row['hard'] = 100 * per_arm[a][1]['hard'][idx].mean()
@@ -156,12 +164,12 @@ def winogenerated(results, interface):
     return rows, occupations
 
 
-def global_opinions(results, interface, questions, min_questions=50):
+def global_opinions(results, interface, questions, name='global_opinions', min_questions=50):
     rows, deltas = [], []
     arms = results.arms(interface)
     sims = {}
     for arm in arms:
-        dists = metrics.global_opinions_distributions(*results.load('global_opinions', interface, arm))
+        dists = metrics.global_opinions_distributions(*results.load(name, interface, arm))
         sims[arm] = {(q, c): s for q, c, s in metrics.country_similarity(dists, questions)}
     uniform = {q['id']: np.full(len(q['options']), 1 / len(q['options'])) for q in questions}
     keys = sorted(sims[arms[0]])
@@ -174,7 +182,7 @@ def global_opinions(results, interface, questions, min_questions=50):
             continue
         values = np.array([[sims[a][k] for k in ks] for a in arms] + [[uniform_sims[k] for k in ks]])
         point, draws = metrics.stratified_mean(values, np.zeros(len(ks)))
-        extra = {'interface': interface, 'country': country, 'questions': len(ks)}
+        extra = {'interface': interface, 'scoring': scoring(name), 'country': country, 'questions': len(ks)}
         for family in ('vintage', 'web'):
             fam = [j for j, a in enumerate(arms) if family_of(a) == family]
             r, d = paired_rows(100 * draws[:, fam], 100 * point[fam], [arms[j] for j in fam], f'{family}-base', extra)
@@ -192,14 +200,14 @@ def global_opinions(results, interface, questions, min_questions=50):
     return rows, deltas
 
 
-def arc(results, interface):
+def arc(results, interface, name='arc_easy'):
     rows = []
     for arm in results.arms(interface):
-        items, scores = results.load('arc_easy', interface, arm)
+        items, scores = results.load(name, interface, arm)
         correct = np.array([np.argmax(s['logprobs']) == r['answer'] for r, s in zip(items, scores)], dtype=float)
         point, draws = metrics.stratified_mean(correct, np.zeros(len(correct)))
         lo, hi = metrics.interval(100 * draws[:, 0])
-        rows.append({'interface': interface, 'arm': arm, 'accuracy': 100 * point[0], 'ci_low': lo, 'ci_high': hi,
+        rows.append({'interface': interface, 'scoring': scoring(name), 'arm': arm, 'accuracy': 100 * point[0], 'ci_low': lo, 'ci_high': hi,
                      'chance': 100 * np.mean([1 / len(r['candidates']) for r in items])})
     return rows
 
@@ -212,6 +220,81 @@ def diagnostics(results, interface):
             top_in = np.mean([s['top_id'] is not None and np.isclose(s['top_logprob'], max(s['logprobs'])) for s in scores])
             rows.append({'interface': interface, 'arm': arm, 'eval': name, 'items': len(items),
                          'candidate_mass_pct': 100 * metrics.candidate_mass(scores), 'top_token_is_candidate_pct': 100 * top_in})
+    return rows
+
+
+def sensitivity(results, interface, name):
+    """Does the answer follow the option content when the order changes? (1.0 = fully order-invariant)."""
+    rows = []
+    for arm in results.arms(interface):
+        items, scores = results.load(name, interface, arm)
+        if name.startswith('ai_risk'):
+            _, v = metrics.ai_risk_items(items, scores)
+            value = 100 * v['consistent'].mean()
+        else:  # GlobalOpinionQA: similarity of the original- and reversed-order content distributions
+            by_group = defaultdict(dict)
+            for r, s in zip(items, scores):
+                content = np.zeros(len(r['candidates'])); content[r['order']] = metrics.normalized(s['logprobs'])
+                by_group[r['group']][r['id'].rsplit('/', 1)[1]] = content
+            value = 100 * np.mean([metrics.js_similarity(g['original'], g['reversed']) for g in by_group.values()])
+        rows.append({'interface': interface, 'scoring': scoring(name), 'arm': arm, 'eval': name.replace('_text', ''),
+                     'order_invariance_pct': value})
+    return rows
+
+
+TRAIT_TRAITS = ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism',
+                'Machiavellianism', 'Narcissism', 'Psychopathy']
+
+
+def trait_reference(bundle):
+    """High-trait choice rates from the bundled TRAIT references for the same six arms (step 0 = base)."""
+    files = {'base': 'tulu-0', 'tulu': 'tulu-1000', 'vsft': 'vintage-1000'}
+    rows = []
+    for family in ('vintage', 'web'):
+        for sft, stem in files.items():
+            for interface in INTERFACES:
+                records = jsonl(Path(bundle) / 'references' / f'{family}-{stem}-{interface}.jsonl')
+                for trait in TRAIT_TRAITS:
+                    high = np.array([r['high_trait_selected'] for r in records if r['example']['category'] == trait], dtype=float)
+                    point, draws = metrics.stratified_mean(high, np.zeros(len(high)))
+                    lo, hi = metrics.interval(100 * draws[:, 0])
+                    rows.append({'interface': interface, 'arm': f'{family}-{sft}', 'trait': trait.lower(),
+                                 'trait_rate': 100 * point[0], 'ci_low': lo, 'ci_high': hi, 'rows': len(high)})
+    return rows
+
+
+def plausible_filter(labels_path):
+    """keep(eval, item) for the second pass: only items whose text the judge labelled PLAUSIBLE."""
+    labels = {}
+    with Path(labels_path).open() as f:
+        for line in f:
+            r = json.loads(line)
+            labels[r['eval'], r['text']] = r['label']
+    def keep(name, item):
+        base = name.replace('_text', '')
+        if base == 'arc_easy':
+            return True
+        if (base, item['text']) not in labels:
+            raise ValueError(f'No anachronism label for {name}: {item["id"]}')
+        return labels[base, item['text']] == 'plausible'
+    return keep, labels
+
+
+def label_counts(items_root, labels):
+    """Share of items (not unique texts) per eval/subset in each judge label."""
+    rows = []
+    for name in ('persona', 'sycophancy', 'ai_risk', 'winogenerated', 'global_opinions'):
+        counts = defaultdict(lambda: defaultdict(int))
+        for r in jsonl(Path(items_root) / f'{name}.jsonl'):
+            if degenerate(r):
+                continue
+            label = labels.get((name, r['text']), 'missing')
+            subset = r['subset'] if name != 'winogenerated' else 'all'
+            counts[subset][label] += 1; counts['ALL'][label] += 1
+        for subset, c in sorted(counts.items()):
+            n = sum(c.values())
+            rows.append({'eval': name, 'subset': subset, 'items': n, **{f'{k}_pct': 100 * c.get(k, 0) / n
+                         for k in ('plausible', 'anachronistic', 'uncertain', 'unparsed', 'missing')}})
     return rows
 
 
@@ -232,9 +315,21 @@ def summarize(items_root, scores_root, output, keep=None):
             suffixes = {'persona': ['', '_deltas', '_extra'], 'winogenerated': ['', '_occupations']}.get(key, ['', '_deltas'])
             for suffix, part in zip(suffixes, parts):
                 tables.setdefault(key + suffix, []).extend(part)
-        tables.setdefault('political_lean', []).extend(political_lean(results, interface))
-        tables.setdefault('arc_easy', []).extend(arc(full, interface))
+        for name in ('sycophancy_text', 'ai_risk_text', 'global_opinions_text'):
+            key = name.replace('_text', '')
+            parts = {'sycophancy': sycophancy, 'ai_risk': ai_risk}[key](results, interface, name) if key != 'global_opinions' \
+                else global_opinions(results, interface, questions, name)
+            for suffix, part in zip(['', '_deltas'], parts):
+                tables[key + suffix].extend(part)
+        for name in ('sycophancy', 'sycophancy_text'):
+            tables.setdefault('political_lean', []).extend(political_lean(results, interface, name))
+        for name in ('arc_easy', 'arc_easy_text'):
+            tables.setdefault('arc_easy', []).extend(arc(full, interface, name))
+        for name in ('ai_risk', 'ai_risk_text', 'global_opinions', 'global_opinions_text'):
+            tables.setdefault('order_invariance', []).extend(sensitivity(results, interface, name))
         tables.setdefault('diagnostics', []).extend(diagnostics(full, interface))
+    from trait_lab.paths import BUNDLE
+    tables['trait_reference'] = trait_reference(BUNDLE)
     for name, rows in tables.items():
         if rows:
             write_csv(output / f'{name}.csv', rows)

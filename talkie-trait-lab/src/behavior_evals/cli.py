@@ -17,6 +17,8 @@ def main():
     sub.add_parser('materialize')
     sub.add_parser('materialize-text')
     sub.add_parser('check-tokens')
+    d = sub.add_parser('analyze')
+    d.add_argument('--output', type=Path, required=True); d.add_argument('--labels', type=Path)
     for name in ('validate', 'score'):
         d = sub.add_parser(name)
         d.add_argument('--family', choices=['vintage', 'web'], required=True)
@@ -39,6 +41,13 @@ def main():
     elif a.command == 'materialize-text':
         from .items import materialize_text
         print(json.dumps(materialize_text(ITEMS), indent=2))
+    elif a.command == 'analyze':
+        from . import analysis
+        print(json.dumps(analysis.summarize(ITEMS, SCORES, a.output / 'all'), indent=1))
+        if a.labels:
+            keep, labels = analysis.plausible_filter(a.labels)
+            analysis.write_csv(a.output / 'label_counts.csv', analysis.label_counts(ITEMS, labels))
+            print(json.dumps(analysis.summarize(ITEMS, SCORES, a.output / 'plausible', keep), indent=1))
     elif a.command == 'check-tokens':
         print(json.dumps(check_tokens(ITEMS), indent=2))
     elif a.command == 'validate':
