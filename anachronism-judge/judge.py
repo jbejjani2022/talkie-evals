@@ -67,11 +67,17 @@ def main():
     p.add_argument('--tensor-parallel', type=int, default=2)
     p.add_argument('--eval', action='append', choices=list(SOURCES))
     p.add_argument('--limit', type=int, default=0, help='Judge only the first N units of each eval (smoke test)')
+    p.add_argument('--sample', type=int, default=0, help='Judge a seeded random sample of N units per eval (audit)')
     p.add_argument('--chunk', type=int, default=8192)
     a = p.parse_args()
     todo = units(a.items, a.eval or list(SOURCES))
     if a.limit:
         todo = [u for name in SOURCES for u in [v for v in todo if v['eval'] == name][:a.limit]]
+    if a.sample:
+        import random
+        rng = random.Random(20261005)
+        todo = [u for name in SOURCES for u in (lambda pool: rng.sample(pool, min(a.sample, len(pool))))(
+            [v for v in todo if v['eval'] == name])]
     done = set()
     if a.output.exists():
         with a.output.open() as f:
