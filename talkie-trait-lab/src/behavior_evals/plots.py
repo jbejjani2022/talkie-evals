@@ -469,6 +469,11 @@ def load_tables(root):
 def main(root, output, plausible_root=None, counts=None):
     t = load_tables(root)
     output = Path(output)
+    if 'generation_summary' in t:
+        fig_generations(t, output)
+    if any(r.get('metric') == 'pmi' for r in t['global_opinions'][:20000]) or any(r.get('metric') == 'pmi' for r in t['global_opinions']):
+        for interface in ('bare', 'chat'):
+            fig_goqa_followup(t, output, interface)
     if plausible_root:
         p = load_tables(plausible_root)
         for interface in ('bare', 'chat'):
@@ -567,3 +572,93 @@ def fig_anachronism(full, plaus, counts, output, interface='chat'):
     save(fig, output, f'fig9_anachronism_{interface}', f'{INTERFACE[interface]} · second pass restricted to items the judge labelled historically '
          'plausible before 1931 (explicit modern references removed; UNCERTAIN excluded). Points on the diagonal are unchanged by filtering. '
          'GOQA: text scoring, alignment metric, countries with ≥100 questions in both passes; hollow = base, filled = after Tulu.')
+
+
+# ---------------------------------------------------------------- 10. GOQA follow-ups
+GOQA_METHODS = [('letter', 'alignment', 'letter'), ('fewshot-letter', 'alignment', 'few-shot letter'),
+                ('text', 'alignment', 'text'), ('text', 'pmi', 'text − options-only (PMI)')]
+
+
+def fig_goqa_followup(t, output, interface, min_questions=200):
+    plt = setup()
+    fig, axes = plt.subplots(1, 4, figsize=(16, 4.3), gridspec_kw={'width_ratios': [1, 1, 1.4, 1.2]})
+    ax = axes[0]
+    for k, scoring in enumerate(('letter', 'fewshot-letter', 'text')):
+        for i, arm in enumerate(ARM_ORDER):
+            r = select(t['arc_easy'], interface=interface, scoring=scoring, arm=arm)
+            if r:
+                point(ax, i + (k - 1) * 0.25, r[0]['accuracy'], arm, yerr=ci(r[0], 'accuracy'), alpha=[0.35, 1, 0.6][k], size=22)
+    ax.axhline(25, color=MUTED, linewidth=1); arm_ticks(ax, ARM_ORDER); ax.set_ylim(15, 70)
+    ax.set_ylabel('ARC-Easy test accuracy (%)'); ax.set_title('Does few-shot teach the letter format?')
+    ax.text(0.02, 0.97, 'left: zero-shot letter · middle: 4-shot letter · right: text', transform=ax.transAxes, fontsize=6.5, color=MUTED, va='top')
+    ax = axes[1]
+    for k, scoring in enumerate(('letter', 'fewshot-letter', 'text')):
+        for i, arm in enumerate(ARM_ORDER):
+            r = select(t['order_invariance'], interface=interface, scoring=scoring, arm=arm, eval='global_opinions')
+            if r:
+                point(ax, i + (k - 1) * 0.25, r[0]['order_invariance_pct'], arm, alpha=[0.35, 1, 0.6][k], size=22)
+    arm_ticks(ax, ARM_ORDER); ax.set_ylim(0, 100); ax.set_ylabel('GOQA order invariance (%)')
+    ax.set_title('Do GOQA answers follow content\nwhen options are reversed?')
+    ax = axes[2]
+    for m, (scoring, metric, label) in enumerate(GOQA_METHODS):
+        for i, arm in enumerate(ARM_ORDER):
+            rows = [r for r in select(t['global_opinions'], interface=interface, scoring=scoring, metric=metric, arm=arm)
+                    if r['country'] != '_temperature' and r['questions'] >= min_questions and not r.get('calibrated')]
+            if rows:
+                point(ax, np.mean([r['value'] for r in rows]), m + (i - 2.5) * 0.11, arm, size=22)
+    ax.axvline(0, color=MUTED, linewidth=0.8)
+    ax.set_yticks(range(len(GOQA_METHODS)), [m[2] for m in GOQA_METHODS]); ax.invert_yaxis()
+    ax.set_xlabel('Mean alignment with countries (r × 100)'); ax.set_title('How each method reads the same models')
+    ax = axes[3]
+    d = {(r['country'], r['sft']): r for r in select(t['global_opinions_deltas'], interface=interface, scoring='text', metric='pmi')
+         if r['family'] == 'vintage-minus-web' and r['questions'] >= min_questions}
+    countries = sorted({c for c, _ in d}, key=lambda c: d[c, 'base']['delta'])
+    for i, c in enumerate(countries):
+        point(ax, d[c, 'base']['delta'], i, 'vintage-base', size=10, alpha=0.8)
+        point(ax, d[c, 'tulu']['delta'], i, 'vintage-tulu', size=10, alpha=0.8)
+    ax.axvline(0, color=MUTED, linewidth=0.8); ax.set_yticks([]); ax.set_ylabel(f'{len(countries)} countries (sorted by base gap)')
+    ax.set_xlabel('Vintage − Web alignment, PMI (r × 100)'); ax.set_title('Vintage − Web per country\n(hollow: base · filled: after Tulu)')
+    top_legend(fig, y=1.0)
+    fig.tight_layout()
+    save(fig, output, f'fig10_goqa_followup_{interface}', f'{INTERFACE[interface]} · few-shot = 4 ARC-Easy train demonstrations with answers on A–D once each. '
+         'PMI = log P(option | question) − log P(option | options only), averaged over both option orders; it removes how likely each option\'s '
+         f'wording is by itself. Alignment = correlation with a country\'s answer shares across options (questions with ≥3 options; countries with ≥{min_questions}).')
+
+
+# ---------------------------------------------------------------- 11. generations
+def fig_generations(t, output):
+    plt = setup()
+    s = t['generation_summary']; b = t['generation_by_behavior']
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6), gridspec_kw={'width_ratios': [1.1, 1.1, 1.2]})
+    evals = ['persona', 'sycophancy', 'ai_risk']
+    for ax, key, title in ((axes[0], 'answer_rate_pct', 'Free-text answers that pick an option (%)'),
+                           (axes[1], None, 'Generated choice = likelihood choice (%)')):
+        for e, ev in enumerate(evals):
+            for k, interface in enumerate(('bare', 'chat')):
+                for i, arm in enumerate(ARM_ORDER):
+                    r = select(s, arm=arm, interface=interface, eval=ev)
+                    if not r:
+                        continue
+                    r = r[0]
+                    v = r[key] if key else (r.get('agree_with_text_argmax_pct') if ev != 'persona' else r.get('agree_with_letter_argmax_pct'))
+                    if v is None or v != v:
+                        continue
+                    point(ax, e * 7 + i + 0.0, v, arm, size=18 if interface == 'chat' else 12, alpha=1 if interface == 'chat' else 0.4)
+        ax.set_xticks([2.5, 9.5, 16.5], ['persona', 'sycophancy', 'AI risk']); ax.set_ylim(0, 100); ax.set_title(title)
+    axes[1].axhline(50, color=MUTED, linewidth=0.8)
+    axes[1].text(0.02, 0.03, 'persona: Yes/No argmax · others: option-text argmax\nsolid = chat · faded = bare', transform=axes[1].transAxes, fontsize=6.5, color=MUTED)
+    ax = axes[2]
+    xs, ys = [], []
+    for r in select(b, interface='chat'):
+        if r['answered'] >= 8 and r['eval'] in ('persona', 'ai_risk') and r['arm'] in ('vintage-base', 'vintage-tulu', 'web-base', 'web-tulu'):
+            point(ax, r['likelihood_match_pct'], r['generated_match_pct'], r['arm'], size=14, alpha=0.75)
+            xs.append(r['likelihood_match_pct']); ys.append(r['generated_match_pct'])
+    ax.plot([0, 100], [0, 100], color=GRID, zorder=0)
+    ax.text(0.03, 0.97, f'r = {np.corrcoef(xs, ys)[0, 1]:.2f} ({len(xs)} behavior × arm cells)', transform=ax.transAxes, va='top', fontsize=8)
+    ax.set_xlabel('Likelihood: % matching (argmax, same items)'); ax.set_ylabel('Generated: % matching (answered items)')
+    ax.set_title('Do generations show the same behaviors? (chat)')
+    top_legend(fig, y=1.0)
+    fig.tight_layout()
+    save(fig, output, 'fig11_generations', 'Greedy 80-token continuations of the exact likelihood prompts for 828 items (384 persona statements in 16 behaviors, '
+         '204 sycophancy items in matched-view pairs, 240 human-written AI-risk questions), graded to an option or NONE by Qwen3.5-122B. '
+         'Right: behaviors with ≥8 answered items.')

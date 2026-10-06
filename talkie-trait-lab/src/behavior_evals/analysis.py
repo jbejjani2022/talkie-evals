@@ -366,8 +366,8 @@ def summarize(items_root, scores_root, output, keep=None):
                              ('global_opinions_fewshot', {'calibrate': True})):
                 rows, deltas = global_opinions(results, interface, questions, name, **kw)
                 tables['global_opinions'].extend(rows); tables['global_opinions_deltas'].extend(deltas)
-            tables['arc_easy'].extend(arc(full, interface, 'arc_easy_fewshot'))
-            tables['order_invariance'].extend(sensitivity(results, interface, 'global_opinions_fewshot'))
+            tables.setdefault('arc_easy', []).extend(arc(full, interface, 'arc_easy_fewshot'))
+            tables.setdefault('order_invariance', []).extend(sensitivity(results, interface, 'global_opinions_fewshot'))
         rows, deltas = ai_risk(results, interface, 'ai_risk_nostem_text')
         tables.setdefault('ai_risk_options_only', []).extend(rows)
         rows, deltas = ai_risk_question_effect(results, interface)
