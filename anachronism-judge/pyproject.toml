@@ -7,5 +7,7 @@ dependencies = ["vllm==0.25.0"]
 
 # PyPI wheels, not the Killarney wheelhouse: the wheelhouse vllm+computecanada build depends on
 # module-provided dummy packages (opencv-noinstall) that uv cannot resolve outside `module load`.
+# uv-managed CPython: the system python3.12 lacks the headers Triton needs to build its CUDA helper.
 [tool.uv]
 package = false
+python-preference = "only-managed"
