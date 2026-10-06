@@ -2,3 +2,5 @@ talkie-trait-lab.zip
 .DS_Store
 logs/
 results/
+# Final figures, findings and summary tables are committed (raw per-item scores are not)
+!/results/
