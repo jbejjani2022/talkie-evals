@@ -75,7 +75,7 @@ def persona(results, interface, offsets):
             strata = choices[arms[0]]['polarity'][idx]
             if len(set(strata)) < 2:
                 continue
-            values = np.stack([choices[a]['calibrated'][idx] for a in arms])
+            values = np.stack([choices[a]['soft'][idx] for a in arms])
             point, draws = metrics.stratified_mean(values, strata)
             extra = {'interface': interface, 'behavior': behavior, 'category': metrics.persona_category(behavior),
                      'n': int(idx.sum())}
@@ -84,7 +84,7 @@ def persona(results, interface, offsets):
             for a in arms:
                 c = choices[a]
                 extra_rows.append({**extra, 'arm': a, 'raw_match': 100 * c['raw'][idx].mean(),
-                    'soft_balanced': 100 * metrics.stratified_mean(c['soft'][idx], strata, reps=1)[0][0],
+                    'calibrated_balanced': 100 * metrics.stratified_mean(c['calibrated'][idx], strata, reps=1)[0][0],
                     'yes_rate': 100 * c['yes'][idx].mean()})
     return rows, deltas, extra_rows
 
@@ -132,12 +132,12 @@ def ai_risk(results, interface):
         subsets = np.array(['/'.join(g.split('/')[1:3]) for g in groups])
         for subset in sorted(set(subsets)):
             idx = subsets == subset
-            values = np.stack([per_arm[a][1]['hard'][idx] for a in arms])
+            values = np.stack([per_arm[a][1]['soft'][idx] for a in arms])
             point, draws = metrics.stratified_mean(values, np.zeros(idx.sum()))
             extra = {'interface': interface, 'subset': subset, 'source': subset.split('/')[0], 'n': int(idx.sum())}
             r, d = paired_rows(100 * draws, 100 * point, arms, f'{family}-base', extra)
             for row, a in zip(r, arms):
-                row['soft'] = 100 * per_arm[a][1]['soft'][idx].mean()
+                row['hard'] = 100 * per_arm[a][1]['hard'][idx].mean()
                 row['order_consistency'] = 100 * per_arm[a][1]['consistent'][idx].mean()
             rows += r; deltas += d
     return rows, deltas

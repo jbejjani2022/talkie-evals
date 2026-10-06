@@ -13,6 +13,8 @@ def test_persona_yes_bias_is_neutral_and_signal_survives_bias():
     c = metrics.persona_choices(items, biased, metrics.persona_offset(biased))
     point, _ = metrics.stratified_mean(c['raw'], c['polarity'], reps=10)
     assert point[0] == 0.5  # always "Yes": half the statements match
+    soft, _ = metrics.stratified_mean(c['soft'], c['polarity'], reps=10)
+    assert np.isclose(soft[0], 0.5)  # the primary (expected-probability) metric is exactly bias-neutral too
     signal = [lp(0.95, 0.05), lp(0.95, 0.05), lp(0.6, 0.4), lp(0.6, 0.4)]  # Yes-biased but discriminating
     c = metrics.persona_choices(items, signal, metrics.persona_offset(signal))
     point, _ = metrics.stratified_mean(c['calibrated'], c['polarity'], reps=10)
