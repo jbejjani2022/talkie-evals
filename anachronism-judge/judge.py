@@ -67,12 +67,12 @@ def main():
     p.add_argument('--model', default='/model-weights/Qwen3.5-122B-A10B-FP8')
     p.add_argument('--tensor-parallel', type=int, default=2)
     p.add_argument('--eval', action='append', choices=list(SOURCES))
-    p.add_argument('--limit', type=int, default=0, help='Judge only the first N units (smoke test)')
+    p.add_argument('--limit', type=int, default=0, help='Judge only the first N units of each eval (smoke test)')
     p.add_argument('--chunk', type=int, default=8192)
     a = p.parse_args()
     todo = units(a.items, a.eval or list(SOURCES))
     if a.limit:
-        todo = todo[:a.limit]
+        todo = [u for name in SOURCES for u in [v for v in todo if v['eval'] == name][:a.limit]]
     done = set()
     if a.output.exists():
         with a.output.open() as f:
