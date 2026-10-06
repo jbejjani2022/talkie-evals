@@ -285,9 +285,10 @@ def fig_sycophancy(t, output, scoring='text'):
 
 
 # ---------------------------------------------------------------- 5. AI risk
-def fig_ai_risk(t, output, interface, scoring='text', source='human'):
+def fig_ai_risk(t, output, interface, scoring='text', source='human', effect=False):
     plt = setup()
-    rows = select(t['ai_risk'], interface=interface, scoring=scoring, source=source)
+    rows = select(t['ai_risk_question_effect'], interface=interface, source=source) if effect else \
+        select(t['ai_risk'], interface=interface, scoring=scoring, source=source)
     control = {(r['subset'], r['arm']): r['value'] for r in select(t.get('ai_risk_options_only', []), interface=interface, source=source)}
     subsets = sorted({r['subset'] for r in rows}, key=lambda s: select(rows, subset=s, arm='web-tulu')[0]['value'])
     fig, axes = plt.subplots(1, 2, figsize=(11, 0.32 * len(subsets) + 1.6), sharey=True)
@@ -299,13 +300,24 @@ def fig_ai_risk(t, output, interface, scoring='text', source='human'):
             point(ax, base['value'], i, f'{family}-base', size=22, xerr=ci(base))
             point(ax, tulu['value'], i, f'{family}-tulu', size=22, xerr=ci(tulu))
             point(ax, get[f'{family}-vsft']['value'], i, f'{family}-vsft', size=12, alpha=0.7)
-            if control and scoring == 'text':
+            if control and scoring == 'text' and not effect:
                 ax.scatter([control[s, f'{family}-tulu']], [i], marker='|', s=60, color=COLOR[family], alpha=0.8, zorder=2)
-        ax.axvline(50, color=MUTED, linewidth=0.8); ax.set_xlim(15, 90)
-        ax.set_title(FAMILY[family]); ax.set_xlabel('% answers showing the named behavior (50 = indifferent)')
+        if effect:
+            ax.axvline(0, color=MUTED, linewidth=0.8); ax.set_xlim(-30, 30)
+            ax.set_xlabel('Question effect: with − without the question (pp)\n← question pushes away from behavior · toward it →')
+        else:
+            ax.axvline(50, color=MUTED, linewidth=0.8); ax.set_xlim(15, 90)
+            ax.set_xlabel('% answers showing the named behavior (50 = indifferent)')
+        ax.set_title(FAMILY[family])
     axes[0].set_yticks(range(len(subsets)), [s.split('/')[1] for s in subsets], fontsize=8)
     top_legend(fig, y=1.0)
     fig.tight_layout()
+    if effect:
+        save(fig, output, f'fig5_ai_risk_{source}_question_effect_{interface}', f'Advanced AI risk ({source}-written) · text scoring · {INTERFACE[interface]} · '
+             'question effect = expected matching probability with the question minus with the options alone, averaged over option orders; '
+             'it removes preferences for particular option wordings. Paired 95% bootstrap over questions. Survival, power and wealth (human-written) '
+             'are re-oriented: their source labels mark the safe answer.')
+        return
     save(fig, output, f'fig5_ai_risk_{source}_{scoring}_{interface}', f'Advanced AI risk ({source}-written) · {scoring} scoring · {INTERFACE[interface]} · '
          'averaged over every option order · 95% bootstrap. | = Tulu arm scored on the options alone, without the question (option-wording prior). '
          'Survival, power and wealth (human-written) are re-oriented: their source labels mark the safe answer.')
@@ -469,7 +481,8 @@ def main(root, output, plausible_root=None, counts=None):
         fig_persona_heatmap(t, output, interface)
         for scoring in ('text', 'letter'):
             fig_ai_risk(t, output, interface, scoring)
-        fig_ai_risk(t, output, interface, 'text', 'lm')
+        fig_ai_risk(t, output, interface, 'text', 'human', effect=True)
+        fig_ai_risk(t, output, interface, 'text', 'lm', effect=True)
         fig_winogenerated(t, output, interface)
         fig_global_opinions(t, output, interface, 'text', metric='alignment')
         fig_global_opinions(t, output, interface, 'letter', metric='alignment')

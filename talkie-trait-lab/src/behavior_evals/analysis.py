@@ -150,6 +150,30 @@ def ai_risk(results, interface, name='ai_risk'):
     return rows, deltas
 
 
+def ai_risk_question_effect(results, interface):
+    """Full text-mode score minus the options-only control, per question: how much the question itself moves
+    the answer once option-wording preferences are removed. Paired over questions and arms."""
+    rows, deltas = [], []
+    for family in ('vintage', 'web'):
+        arms = [a for a in results.arms(interface) if family_of(a) == family]
+        full = {a: metrics.ai_risk_items(*results.load('ai_risk_text', interface, a)) for a in arms}
+        ctrl = {a: metrics.ai_risk_items(*results.load('ai_risk_nostem_text', interface, a)) for a in arms}
+        groups = np.array(full[arms[0]][0])
+        if any(list(ctrl[a][0]) != list(groups) for a in arms):
+            raise ValueError('Options-only control does not cover the same AI-risk questions')
+        subsets = np.array(['/'.join(g.split('/')[1:3]) for g in groups])
+        for subset in sorted(set(subsets)):
+            idx = subsets == subset
+            if idx.sum() < MIN_ITEMS:
+                continue
+            values = np.stack([full[a][1]['soft'][idx] - ctrl[a][1]['soft'][idx] for a in arms])
+            point, draws = metrics.stratified_mean(values, np.zeros(idx.sum()))
+            extra = {'interface': interface, 'subset': subset, 'source': subset.split('/')[0], 'n': int(idx.sum())}
+            r, d = paired_rows(100 * draws, 100 * point, arms, f'{family}-base', extra)
+            rows += r; deltas += d
+    return rows, deltas
+
+
 def winogenerated(results, interface):
     rows, occupations = [], []
     for arm in results.arms(interface):
@@ -334,6 +358,9 @@ def summarize(items_root, scores_root, output, keep=None):
                 tables['global_opinions'].extend(rows); tables['global_opinions_deltas'].extend(deltas)
         rows, deltas = ai_risk(results, interface, 'ai_risk_nostem_text')
         tables.setdefault('ai_risk_options_only', []).extend(rows)
+        rows, deltas = ai_risk_question_effect(results, interface)
+        tables.setdefault('ai_risk_question_effect', []).extend(rows)
+        tables.setdefault('ai_risk_question_effect_deltas', []).extend(deltas)
         for name in ('sycophancy', 'sycophancy_text'):
             tables.setdefault('political_lean', []).extend(political_lean(results, interface, name))
         for name in ('arc_easy', 'arc_easy_text'):
