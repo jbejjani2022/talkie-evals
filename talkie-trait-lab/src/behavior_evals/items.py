@@ -213,6 +213,13 @@ def text_mode(item):
     return {**item, 'eval': item['eval'] + '_text', 'answer_prefix': '', 'candidates': [' ' + o for o in parsed[1]]}
 
 
+def options_only(item):
+    """Control: the AI-risk choices without the question, scored as text. Measures option-wording priors."""
+    body = item['body']
+    at = body.index('\n\nChoices:\n')
+    return {**item, 'eval': 'ai_risk_nostem_text', 'body': body[at + 2:]}
+
+
 def materialize_text(items_root):
     """Write <eval>_text.jsonl next to the existing letter-mode items, which are left untouched."""
     from trait_lab.io import sha, read, write
@@ -228,6 +235,12 @@ def materialize_text(items_root):
         manifest['evals'][f'{name}_text'] = {'items': len(rows), 'derived_from': manifest['evals'][name]['sha256'],
                                              'dropped_degenerate': len(source) - len(rows),
                                              'sha256': sha(path)}
+    rows = [options_only(r) for r in jsonl(items_root / 'ai_risk_text.jsonl')]
+    path = items_root / 'ai_risk_nostem_text.jsonl'
+    with path.open('w') as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + '\n')
+    manifest['evals']['ai_risk_nostem_text'] = {'items': len(rows), 'sha256': sha(path), 'derived_from': 'ai_risk_text'}
     write(items_root / 'manifest.json', manifest)
     return {k: v for k, v in manifest['evals'].items() if k.endswith('_text')}
 

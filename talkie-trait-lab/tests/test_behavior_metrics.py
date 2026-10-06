@@ -54,3 +54,10 @@ def test_global_opinions_maps_reversed_order_back_to_content():
 def test_clustered_mean_is_paired_across_arms():
     point, draws = metrics.clustered_mean([[1, 1, 0, 0], [1, 1, 0, 0]], ['a', 'a', 'b', 'b'], reps=50)
     assert np.allclose(point, 0.5) and np.allclose(draws[:, 0], draws[:, 1])
+
+
+def test_temperature_calibration_softens_overconfident_answers():
+    questions = [{'id': f'q{i}', 'selections': {'X': [0.5, 0.3, 0.2]}} for i in range(5)]
+    peaked = {f'q{i}': np.array([0.98, 0.01, 0.01]) for i in range(5)}
+    t, rescaled = metrics.temperature_calibrate(peaked, questions)
+    assert t > 1 and metrics.js_similarity(rescaled['q0'], [0.5, 0.3, 0.2]) > metrics.js_similarity(peaked['q0'], [0.5, 0.3, 0.2])

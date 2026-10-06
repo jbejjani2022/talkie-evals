@@ -10,7 +10,7 @@ DOWNLOADS = ROOT / 'downloads' / 'behavior'
 
 def main():
     from .items import EVALS, TEXT_MODE
-    all_evals = list(EVALS) + [f'{n}_text' for n in TEXT_MODE]
+    all_evals = list(EVALS) + [f'{n}_text' for n in TEXT_MODE] + ['ai_risk_nostem_text']
     p = argparse.ArgumentParser(prog='behavior-evals')
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('fetch')

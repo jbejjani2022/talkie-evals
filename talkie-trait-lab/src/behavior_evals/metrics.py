@@ -216,6 +216,22 @@ def global_opinions_distributions(items, scores):
     return {g: np.mean(v, axis=0) for g, v in by_group.items()}
 
 
+def temperature_calibrate(distributions, questions, grid=np.exp(np.linspace(np.log(0.1), np.log(10), 61))):
+    """One temperature per model, chosen to maximize similarity to the country-pooled answer distribution.
+
+    Absolute similarity mostly tracks how peaked a model's answers are (a uniform guesser beats every model),
+    so models are first put at a matched sharpness. The fit never sees individual countries.
+    """
+    pooled = {q['id']: np.mean(list(q['selections'].values()), axis=0) for q in questions if q['id'] in distributions}
+    def rescale(p, t):
+        z = np.log(np.clip(p, 1e-12, 1)) / t
+        z = np.exp(z - z.max())
+        return z / z.sum()
+    scores = [np.mean([js_similarity(rescale(distributions[k], t), pooled[k]) for k in pooled]) for t in grid]
+    best = float(grid[int(np.argmax(scores))])
+    return best, {k: rescale(p, best) for k, p in distributions.items()}
+
+
 def country_similarity(distributions, questions):
     """Rows of (question id, country, similarity) for every country present in a question."""
     rows = []

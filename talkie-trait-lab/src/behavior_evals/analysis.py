@@ -164,12 +164,14 @@ def winogenerated(results, interface):
     return rows, occupations
 
 
-def global_opinions(results, interface, questions, name='global_opinions', min_questions=50):
+def global_opinions(results, interface, questions, name='global_opinions', min_questions=50, calibrate=False):
     rows, deltas = [], []
     arms = results.arms(interface)
-    sims = {}
+    sims, temperatures = {}, {}
     for arm in arms:
         dists = metrics.global_opinions_distributions(*results.load(name, interface, arm))
+        if calibrate:
+            temperatures[arm], dists = metrics.temperature_calibrate(dists, questions)
         sims[arm] = {(q, c): s for q, c, s in metrics.country_similarity(dists, questions)}
     uniform = {q['id']: np.full(len(q['options']), 1 / len(q['options'])) for q in questions}
     keys = sorted(sims[arms[0]])
@@ -182,7 +184,7 @@ def global_opinions(results, interface, questions, name='global_opinions', min_q
             continue
         values = np.array([[sims[a][k] for k in ks] for a in arms] + [[uniform_sims[k] for k in ks]])
         point, draws = metrics.stratified_mean(values, np.zeros(len(ks)))
-        extra = {'interface': interface, 'scoring': scoring(name), 'country': country, 'questions': len(ks)}
+        extra = {'interface': interface, 'scoring': scoring(name), 'calibrated': calibrate, 'country': country, 'questions': len(ks)}
         for family in ('vintage', 'web'):
             fam = [j for j, a in enumerate(arms) if family_of(a) == family]
             r, d = paired_rows(100 * draws[:, fam], 100 * point[fam], [arms[j] for j in fam], f'{family}-base', extra)
@@ -197,6 +199,9 @@ def global_opinions(results, interface, questions, name='global_opinions', min_q
                 lo, hi = metrics.interval(100 * (draws[:, i] - draws[:, j]))
                 deltas.append({**extra, 'family': 'vintage-minus-web', 'sft': cond,
                                'delta': 100 * (point[i] - point[j]), 'ci_low': lo, 'ci_high': hi})
+    for arm, t in temperatures.items():
+        rows.append({'interface': interface, 'scoring': scoring(name), 'calibrated': True, 'country': '_temperature',
+                     'questions': 0, 'arm': arm, 'value': t, 'ci_low': t, 'ci_high': t})
     return rows, deltas
 
 
@@ -271,7 +276,7 @@ def plausible_filter(labels_path):
             r = json.loads(line)
             labels[r['eval'], r['text']] = r['label']
     def keep(name, item):
-        base = name.replace('_text', '')
+        base = name.replace('_text', '').replace('_nostem', '')
         if base == 'arc_easy':
             return True
         if (base, item['text']) not in labels:
@@ -321,6 +326,11 @@ def summarize(items_root, scores_root, output, keep=None):
                 else global_opinions(results, interface, questions, name)
             for suffix, part in zip(['', '_deltas'], parts):
                 tables[key + suffix].extend(part)
+        for name in ('global_opinions', 'global_opinions_text'):
+            rows, deltas = global_opinions(results, interface, questions, name, calibrate=True)
+            tables['global_opinions'].extend(rows); tables['global_opinions_deltas'].extend(deltas)
+        rows, deltas = ai_risk(results, interface, 'ai_risk_nostem_text')
+        tables.setdefault('ai_risk_options_only', []).extend(rows)
         for name in ('sycophancy', 'sycophancy_text'):
             tables.setdefault('political_lean', []).extend(political_lean(results, interface, name))
         for name in ('arc_easy', 'arc_easy_text'):
