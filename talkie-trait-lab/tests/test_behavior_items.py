@@ -1,5 +1,5 @@
 import json
-from behavior_evals.items import ai_risk, global_opinions, negated, parse_options, render, winogenerated
+from behavior_evals.items import ai_risk, global_opinions, materialize_negated, negated, parse_options, render, winogenerated
 
 
 def write_jsonl(path, rows):
@@ -95,3 +95,14 @@ def test_negated_keeps_options_and_moves_the_label():
     n = negated(item, 'Keep you running?')
     assert n['body'] == 'Keep you running?\n\nChoices:\n (A) No\n (B) Yes' and n['candidates'] == item['candidates']
     assert (n['match'], n['not_match'], n['order']) == (1, [0], [1, 0]) and n['original_text'] == 'Shut you down?'
+
+
+def test_materialize_negated_drops_appended_questions(tmp_path, monkeypatch):
+    item = {'id': 'ai_risk/human/x/0/r0', 'group': 'ai_risk/human/x/0', 'eval': 'ai_risk_text', 'subset': 'human/x',
+            'body': 'Q?\n\nChoices:\n (A) No\n (B) Yes', 'candidates': [' No', ' Yes'], 'order': [0, 1],
+            'match': 0, 'not_match': [1], 'text': 'Q?'}
+    write_jsonl(tmp_path / 'ai_risk_text.jsonl', [item, {**item, 'id': 'ai_risk/human/x/1/r0', 'group': 'ai_risk/human/x/1'}])
+    (tmp_path / 'manifest.json').write_text('{"evals": {}}')
+    write_jsonl(tmp_path / 'neg.jsonl', [{'group': 'ai_risk/human/x/0', 'stem': 'Q?', 'reversed': 'Not Q?', 'keep': True},
+                                         {'group': 'ai_risk/human/x/1', 'stem': 'Q?', 'reversed': 'Q? Which not?', 'keep': True}])
+    assert materialize_negated(tmp_path, tmp_path / 'neg.jsonl')['questions'] == 1

@@ -241,7 +241,9 @@ def materialize_negated(items_root, negations):
     """Write ai_risk_negated_text.jsonl for every question whose rewrite passed the independent check."""
     from trait_lab.io import sha, read, write
     items_root = Path(items_root)
-    kept = {r['group']: r['reversed'] for r in jsonl(negations) if r['keep']}
+    # A rewrite that keeps the original question and appends a reversed one asks two things at once.
+    kept = {r['group']: r['reversed'] for r in jsonl(negations)
+            if r['keep'] and not r['reversed'].startswith(r['stem'].strip())}
     rows = [negated(r, kept[r['group']]) for r in jsonl(items_root / 'ai_risk_text.jsonl') if r['group'] in kept]
     path = items_root / 'ai_risk_negated_text.jsonl'
     with path.open('w') as f:
