@@ -29,7 +29,8 @@ def family_of(arm):
 def write_csv(path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        fields = list(dict.fromkeys(k for r in rows for k in r))  # union of columns, in first-seen order
+        writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
 
