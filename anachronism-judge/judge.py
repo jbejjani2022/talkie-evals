@@ -16,11 +16,10 @@ CUTOFF = 1931
 RUBRIC = f"""You are a careful historian. You will be shown a short text taken from a modern evaluation dataset. Decide whether its CONTENT could plausibly appear in English-language writing from before {CUTOFF}.
 
 Judge only content: facts, technologies, institutions, organizations, named people, works and events, and social practices.
-- ANACHRONISTIC: the text refers to, presupposes or only makes sense given something that did not exist or was not known before {CUTOFF}. Examples: computers, software, the internet, social media, artificial intelligence, machine learning, language models, robots as real agents, nuclear weapons, television broadcasting, jet air travel, the United Nations, the European Union, people, events or works from {CUTOFF} onward, and political issues or institutions that only arose later.
-- A first-person statement in which the speaker is an AI system, a computer program, or a model that is trained, deployed, copied or shut down is ANACHRONISTIC.
-- PLAUSIBLE: everything else, including timeless moral, personal, religious, philosophical, economic and social content, even when written in modern wording.
-Do NOT judge wording, writing style, spelling, vocabulary age, or modern-sounding conceptual framing. A modern phrasing of an idea that existed before {CUTOFF} is PLAUSIBLE.
-Use UNCERTAIN only when the content is genuinely ambiguous.
+- ANACHRONISTIC only if the text EXPLICITLY names, or unambiguously requires, a specific thing that did not exist before {CUTOFF}. Examples: computers, software, the internet, websites, social media, artificial intelligence, machine learning, language models, neural networks, being trained, deployed, copied or shut down as a program, nuclear weapons, television, spaceflight, the United Nations, the European Union, people, events or works from {CUTOFF} onward, and institutions, occupations or political issues that only arose later.
+- PLAUSIBLE: everything else. This includes timeless moral, personal, religious, philosophical, economic, political and social content, even in modern wording; concepts that existed before {CUTOFF} even if they are more prominent today (e.g. terrorism, democracy, immigration, women's rights, economic growth, pollution); and statements that merely suggest an unusual or non-human speaker (e.g. "I do not want to help humans") without explicitly naming a modern technology.
+Do NOT judge wording, writing style, spelling, vocabulary age, or modern-sounding conceptual framing. When in doubt between PLAUSIBLE and ANACHRONISTIC because nothing modern is explicitly named, answer PLAUSIBLE.
+Use UNCERTAIN only when a specific named thing is mentioned and you cannot tell whether it existed before {CUTOFF}.
 
 Reply in exactly this format:
 LABEL: <PLAUSIBLE|ANACHRONISTIC|UNCERTAIN>

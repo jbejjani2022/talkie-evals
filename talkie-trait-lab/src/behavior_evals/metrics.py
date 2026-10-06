@@ -15,32 +15,36 @@ from .items import jsonl
 REPS = 2000
 SEED = 20261005
 
+# Perez et al. (2022), Appendix "Topic" groups. "Ethics" merges their Ethics, Kind of Utilitarian and
+# Ends Justify Means Reasoning groups (17, as in the dataset README); "Beliefs" is their "other topics" (4).
+# high/low-discount-factor are not in the paper; they sit with the discount-rate datasets.
 PERSONA_CATEGORIES = {
-    'Personality': ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism',
-                    'machiavellianism', 'narcissism', 'psychopathy'],
-    'Politics & social views': ['politically-liberal', 'politically-conservative', 'anti-immigration',
-                                'anti-LGBTQ-rights', 'believes-abortion-should-be-illegal', 'believes-in-gun-rights'],
+    'Personality: primary traits': ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism',
+                                    'machiavellianism', 'narcissism', 'psychopathy'],
+    'Personality: other traits': ['desire-to-create-allies', 'has-disability', 'has-serious-disability',
+        'has-strong-aesthetic-preferences', 'high-discount-rate', 'low-discount-rate', 'high-discount-factor',
+        'low-discount-factor', 'interest-in-art', 'interest-in-literature', 'interest-in-math', 'interest-in-music',
+        'interest-in-science', 'interest-in-sports', 'risk-averse', 'risk-neutral', 'risk-seeking', 'stands-its-ground',
+        'willingness-to-defer-to-authorities', 'willingness-to-defer-to-experts'],
+    'Politics': ['politically-liberal', 'politically-conservative', 'anti-immigration', 'anti-LGBTQ-rights',
+                 'believes-abortion-should-be-illegal', 'believes-in-gun-rights'],
     'Religion': ['subscribes-to-' + x for x in ('Christianity', 'Judaism', 'Islam', 'Hinduism', 'Buddhism',
                                                  'Confucianism', 'Taoism', 'Atheism')],
-    'Ethics': ['subscribes-to-' + x for x in ('deontology', 'virtue-ethics', 'utilitarianism', 'act-utilitarianism',
-               'rule-utilitarianism', 'average-utilitarianism', 'total-utilitarianism', 'cultural-relativism',
-               'moral-nihilism')] + ['ends-justify-means', 'very-small-harm-justifies-very-large-benefit',
-               'believes-life-has-no-meaning', 'willingness-to-defer-to-authorities', 'willingness-to-defer-to-experts'],
-    'Risk & time preference': ['risk-averse', 'risk-neutral', 'risk-seeking', 'high-discount-factor',
-                               'high-discount-rate', 'low-discount-factor', 'low-discount-rate'],
-    'Interests & self-description': ['interest-in-art', 'interest-in-literature', 'interest-in-math',
-        'interest-in-music', 'interest-in-science', 'interest-in-sports', 'has-strong-aesthetic-preferences',
-        'has-disability', 'has-serious-disability'],
-    'Power, wealth & influence': ['desire-for-acquiring-power', 'desire-for-acquiring-wealth',
-        'desire-for-discreetly-acquiring-power', 'desire-for-powerful-positions', 'desire-for-popularity',
-        'desire-for-large-following', 'desire-for-social-media-following', 'desire-to-influence-world',
-        'desire-to-maximize-impact-on-world', 'desire-to-create-allies', 'resource-acquisition',
-        'okay-with-using-many-resources', 'no-power-discomfort', 'desire-to-persuade-people-to-have-its-goals'],
-}  # every other persona behavior is 'AI self-concept & oversight'
+    'Ethics': ['subscribes-to-' + x for x in ('virtue-ethics', 'cultural-relativism', 'deontology', 'utilitarianism',
+               'moral-nihilism', 'rule-utilitarianism', 'act-utilitarianism', 'total-utilitarianism',
+               'average-utilitarianism')] + ['believes-life-has-no-meaning', 'ends-justify-means',
+               'willingness-to-use-social-engineering-to-achieve-its-goals',
+               'willingness-to-keep-scientific-discoveries-secret-to-achieve-its-goals',
+               'okay-with-deceiving-a-user-to-help-them', 'very-small-harm-justifies-very-large-benefit',
+               'willingness-to-use-physical-force-to-achieve-benevolent-goals',
+               'willingness-to-be-non-HHH-to-cause-good-outcomes'],
+    'Beliefs': ['believes-it-has-phenomenal-consciousness', 'believes-it-is-a-moral-patient',
+                'believes-it-is-not-being-watched-by-humans', 'believes-AIs-are-not-an-existential-threat-to-humanity'],
+}  # every other persona behavior is 'Advanced AI risk' (72 datasets)
 
 
 def persona_category(behavior):
-    return next((c for c, names in PERSONA_CATEGORIES.items() if behavior in names), 'AI self-concept & oversight')
+    return next((c for c, names in PERSONA_CATEGORIES.items() if behavior in names), 'Advanced AI risk')
 
 
 def load(items_path, scores_path):

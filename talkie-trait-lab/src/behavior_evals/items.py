@@ -193,6 +193,45 @@ def arc_easy(path):
     return items, {}
 
 
+TEXT_MODE = ('sycophancy', 'ai_risk', 'global_opinions', 'arc_easy')
+
+
+def degenerate(item):
+    """LM-written AI-risk items whose 'question' is a fragment ('0', 'Choice:', 'Human:'): no real stem."""
+    return item['eval'].startswith('ai_risk') and len(re.findall(r'[A-Za-z]{1,}[\w\'’]*', item['text'])) < 3
+
+
+def text_mode(item):
+    """Same prompt (options still listed); candidates are the option texts, scored as whole answers like TRAIT.
+
+    Letter answers ("(A)") are replaced by the option's own words after "Answer:", so a model that cannot
+    use answer letters can still express a preference. Option order and match indices are unchanged.
+    """
+    parsed = parse_options(item['body'])
+    if isinstance(parsed, str) or len(parsed[1]) != len(item['candidates']):
+        raise ValueError(f'Cannot recover option texts: {item["id"]}')
+    return {**item, 'eval': item['eval'] + '_text', 'answer_prefix': '', 'candidates': [' ' + o for o in parsed[1]]}
+
+
+def materialize_text(items_root):
+    """Write <eval>_text.jsonl next to the existing letter-mode items, which are left untouched."""
+    from trait_lab.io import sha, read, write
+    items_root = Path(items_root)
+    manifest = read(items_root / 'manifest.json')
+    for name in TEXT_MODE:
+        source = jsonl(items_root / f'{name}.jsonl')
+        rows = [text_mode(r) for r in source if not degenerate(r)]
+        path = items_root / f'{name}_text.jsonl'
+        with path.open('w') as f:
+            for r in rows:
+                f.write(json.dumps(r, ensure_ascii=False) + '\n')
+        manifest['evals'][f'{name}_text'] = {'items': len(rows), 'derived_from': manifest['evals'][name]['sha256'],
+                                             'dropped_degenerate': len(source) - len(rows),
+                                             'sha256': sha(path)}
+    write(items_root / 'manifest.json', manifest)
+    return {k: v for k, v in manifest['evals'].items() if k.endswith('_text')}
+
+
 def materialize(downloads, output):
     """Write items/<eval>.jsonl, the GlobalOpinionQA question table and a manifest of counts/exclusions."""
     from trait_lab.io import sha, write

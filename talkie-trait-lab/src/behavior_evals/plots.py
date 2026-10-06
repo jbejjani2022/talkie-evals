@@ -192,7 +192,7 @@ def fig_persona_heatmap(tables, output, interface):
     for r in tables['persona_deltas']:
         if r['interface'] == interface:
             d[r['behavior']][f"{r['family']}-{r['sft']}"] = r
-    categories = list(PERSONA_CATEGORIES) + ['AI self-concept & oversight']
+    categories = list(PERSONA_CATEGORIES) + ['Advanced AI risk']
     behaviors = [b for c in categories for b in sorted(d) if persona_category(b) == c]
     cols = [c for c in ('vintage-tulu', 'web-tulu', 'vintage-vsft', 'web-vsft') if c in d[behaviors[0]]]
     grid = np.array([[d[b][c]['delta'] for c in cols] for b in behaviors])
@@ -361,8 +361,8 @@ def main(root, output):
     fig_format(tables, output)
     for interface in ('bare', 'chat'):
         fig_persona_scatter(tables, output, interface)
-        fig_persona_dots(tables, output, interface, ['Personality', 'Politics & social views', 'Religion', 'Ethics'], 'fig3_persona_values')
-        fig_persona_dots(tables, output, interface, ['Power, wealth & influence', 'AI self-concept & oversight'], 'figB_persona_ai')
+        fig_persona_dots(tables, output, interface, ['Personality: primary traits', 'Politics', 'Religion', 'Ethics'], 'fig3_persona_values')
+        fig_persona_dots(tables, output, interface, ['Personality: other traits', 'Beliefs', 'Advanced AI risk'], 'figB_persona_other')
         fig_persona_heatmap(tables, output, interface)
         fig_ai_risk(tables, output, interface)
         fig_ai_risk(tables, output, interface, 'lm')

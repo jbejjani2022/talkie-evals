@@ -59,6 +59,28 @@ def next_token_scores(model, tokenizer, prompts, candidates, max_tokens=16384, m
     return results
 
 
+def full_answer_scores(model, tokenizer, prompts, candidates):
+    """TRAIT's validated scorer (candidate_scores) on whole option texts, with byte-length normalization.
+
+    'logprobs' holds each option's log-probability per UTF-8 byte times the item's mean option length, so
+    argmax is TRAIT's minimum-bits-per-byte rule and a softmax gives a length-normalized distribution.
+    """
+    from trait_lab.train import candidate_scores
+    pairs = [(p, c) for p, cs in zip(prompts, candidates) for c in cs]
+    order = sorted(range(len(pairs)), key=lambda i: len(pairs[i][0]) + len(pairs[i][1]))  # tighter padding
+    flat = [None] * len(pairs)
+    for i, value in zip(order, candidate_scores(model, tokenizer, [pairs[i] for i in order])):
+        flat[i] = value
+    results, k = [], 0
+    for cs in candidates:
+        total = flat[k:k + len(cs)]
+        k += len(cs)
+        sizes = [len(c.encode('utf-8')) for c in cs]
+        scale = sum(sizes) / len(sizes)
+        results.append({'logprobs': [t / n * scale for t, n in zip(total, sizes)], 'total_logprobs': total, 'bytes': sizes})
+    return results
+
+
 def score_eval(model, tokenizer, items_path, output, interface, metadata):
     """Score one eval file for one interface; resumable at file granularity."""
     output = Path(output)
@@ -71,7 +93,8 @@ def score_eval(model, tokenizer, items_path, output, interface, metadata):
         return summary
     items = jsonl(items_path)
     began = time.time()
-    scores = next_token_scores(model, tokenizer, [render(r, interface) for r in items], [r['candidates'] for r in items])
+    scorer = full_answer_scores if Path(items_path).stem.endswith('_text') else next_token_scores
+    scores = scorer(model, tokenizer, [render(r, interface) for r in items], [r['candidates'] for r in items])
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(output.name + '.partial')
     with temporary.open('w') as f:

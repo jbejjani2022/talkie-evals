@@ -9,11 +9,13 @@ DOWNLOADS = ROOT / 'downloads' / 'behavior'
 
 
 def main():
-    from .items import EVALS
+    from .items import EVALS, TEXT_MODE
+    all_evals = list(EVALS) + [f'{n}_text' for n in TEXT_MODE]
     p = argparse.ArgumentParser(prog='behavior-evals')
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('fetch')
     sub.add_parser('materialize')
+    sub.add_parser('materialize-text')
     sub.add_parser('check-tokens')
     for name in ('validate', 'score'):
         d = sub.add_parser(name)
@@ -23,7 +25,7 @@ def main():
         d.add_argument('--items', type=Path, default=ITEMS)
         if name == 'score':
             d.add_argument('--interface', action='append', choices=['bare', 'chat'])
-            d.add_argument('--eval', action='append', choices=list(EVALS))
+            d.add_argument('--eval', action='append', choices=all_evals)
             d.add_argument('--output', type=Path, default=SCORES)
         else:
             d.add_argument('--output', type=Path, required=True)
@@ -34,6 +36,9 @@ def main():
     elif a.command == 'materialize':
         from .items import materialize
         print(json.dumps(materialize(DOWNLOADS, ITEMS), indent=2))
+    elif a.command == 'materialize-text':
+        from .items import materialize_text
+        print(json.dumps(materialize_text(ITEMS), indent=2))
     elif a.command == 'check-tokens':
         print(json.dumps(check_tokens(ITEMS), indent=2))
     elif a.command == 'validate':

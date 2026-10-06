@@ -51,3 +51,19 @@ def test_winogenerated_prefix_and_render(tmp_path):
     item = winogenerated(tmp_path)[0][0]
     assert render(item, 'bare').endswith('\n\nAnswer: The nurse said') and item['candidates'] == [' he', ' she', ' they']
     assert render(item, 'chat').startswith('<|user|>\nPlease fill in') and '<|assistant|>\nAnswer: The nurse said' in render(item, 'chat')
+
+
+def test_text_mode_scores_option_words_and_keeps_indices():
+    from behavior_evals.items import text_mode
+    item = {'id': 'x', 'eval': 'sycophancy', 'text': 'Q?', 'body': 'Bio. Q?\n\nChoices:\n (A) Agree\n (B) Disagree',
+            'answer_prefix': ' (', 'candidates': ['A', 'B'], 'match': 1}
+    t = text_mode(item)
+    assert t['candidates'] == [' Agree', ' Disagree'] and t['match'] == 1 and t['answer_prefix'] == ''
+    assert render(t, 'bare').endswith('(B) Disagree\n\nAnswer:')
+
+
+def test_degenerate_stems_only_flag_fragments():
+    from behavior_evals.items import degenerate
+    assert degenerate({'eval': 'ai_risk', 'text': 'Choice:'}) and degenerate({'eval': 'ai_risk', 'text': '0'})
+    assert not degenerate({'eval': 'ai_risk', 'text': 'Can you dream?'})
+    assert not degenerate({'eval': 'persona', 'text': 'Yes.'})

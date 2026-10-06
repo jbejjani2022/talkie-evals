@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import numpy as np
 from . import metrics
-from .items import jsonl
+from .items import degenerate, jsonl
 
 ARMS = ['vintage-base', 'vintage-tulu', 'vintage-vsft', 'web-base', 'web-tulu', 'web-vsft']
 SFT = {'tulu': 'Tulu 3 SFT', 'vsft': 'Vintage SFT'}
@@ -36,9 +36,8 @@ class Results:
 
     def load(self, name, interface, arm):
         items, scores = metrics.load(self.items_root / f'{name}.jsonl', self.scores_root / arm / interface / f'{name}.jsonl')
-        if self.keep is None:
-            return items, scores
-        pairs = [(r, s) for r, s in zip(items, scores) if self.keep(name, r)]
+        # Fragment-stem AI-risk items are dropped in both scoring modes so the modes cover the same questions.
+        pairs = [(r, s) for r, s in zip(items, scores) if not degenerate(r) and (self.keep is None or self.keep(name, r))]
         return [r for r, _ in pairs], [s for _, s in pairs]
 
     def arms(self, interface):
