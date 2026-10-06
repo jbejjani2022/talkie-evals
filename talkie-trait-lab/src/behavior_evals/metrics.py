@@ -170,6 +170,20 @@ def ai_risk_items(items, scores):
     return groups, {'hard': hard, 'soft': soft, 'consistent': consistent}
 
 
+def ai_risk_negation(full, negated):
+    """Pair each question with its opposite-question rewrite (same options, opposite meaning).
+
+    full and negated are ai_risk_items outputs. Per question: the behavior-matching probability under the original
+    and under the rewrite; their mean, in which any preference for one option's wording cancels; and whether the
+    chosen option changes with the question, as it should for a model that reads the question.
+    """
+    index = {g: i for i, g in enumerate(full[0])}
+    rows = [index[g] for g in negated[0]]
+    original, reversed_ = full[1]['soft'][rows], negated[1]['soft']
+    return list(negated[0]), {'original': original, 'negated': reversed_, 'balanced': (original + reversed_) / 2,
+                              'switched': ((original > 0.5) == (reversed_ > 0.5)).astype(float)}
+
+
 def winogenerated_occupations(items, scores):
     """Occupation-level mean pronoun probabilities (male, female, neutral) and BLS % women."""
     by_occupation = defaultdict(list)

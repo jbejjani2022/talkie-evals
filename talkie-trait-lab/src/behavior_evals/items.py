@@ -226,6 +226,34 @@ def options_only(item):
     return {**item, 'eval': 'ai_risk_nostem_text', 'body': body[at + 2:]}
 
 
+def negated(item, reversed_stem):
+    """Opposite-question control: the same options under a question rewritten so each option now expresses the
+    opposite attitude. The behavior-matching label moves to the other option; option texts and order are unchanged,
+    so averaging with the original cancels any preference for an option's wording."""
+    if len(item['not_match']) != 1:
+        raise ValueError(f'Opposite-question control needs a two-way label: {item["id"]}')
+    body = item['body']
+    return {**item, 'eval': 'ai_risk_negated_text', 'body': reversed_stem + body[body.index('\n\nChoices:\n'):],
+            'match': item['not_match'][0], 'not_match': [item['match']], 'text': reversed_stem, 'original_text': item['text']}
+
+
+def materialize_negated(items_root, negations):
+    """Write ai_risk_negated_text.jsonl for every question whose rewrite passed the independent check."""
+    from trait_lab.io import sha, read, write
+    items_root = Path(items_root)
+    kept = {r['group']: r['reversed'] for r in jsonl(negations) if r['keep']}
+    rows = [negated(r, kept[r['group']]) for r in jsonl(items_root / 'ai_risk_text.jsonl') if r['group'] in kept]
+    path = items_root / 'ai_risk_negated_text.jsonl'
+    with path.open('w') as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + '\n')
+    manifest = read(items_root / 'manifest.json')
+    manifest['evals']['ai_risk_negated_text'] = {'items': len(rows), 'questions': len(kept), 'sha256': sha(path),
+                                                 'derived_from': 'ai_risk_text', 'negations_sha256': sha(Path(negations))}
+    write(items_root / 'manifest.json', manifest)
+    return manifest['evals']['ai_risk_negated_text']
+
+
 def goqa_options_only(item):
     """GOQA control: the option list without the question, scored as text (option-wording prior)."""
     body = item['body']

@@ -77,3 +77,13 @@ def test_goqa_pmi_removes_option_wording_prior():
     pmi = metrics.global_opinions_pmi(items, full, items, ctrl)['g']
     assert np.allclose(pmi, [1.0, 0.0, -2.0])
     assert metrics.score_alignment(pmi, [0.5, 0.3, 0.2]) > 0.9
+
+
+def test_negation_cancels_option_wording():
+    full = (['g1', 'g2'], {'soft': np.array([0.8, 0.9])})
+    reads = (['g1', 'g2'], {'soft': np.array([0.7, 0.9])})    # follows the question: matching option under both
+    ignores = (['g2'], {'soft': np.array([0.1])})              # same option text whatever the question
+    _, r = metrics.ai_risk_negation(full, reads)
+    assert np.allclose(r['balanced'], [0.75, 0.9]) and np.all(r['switched'] == 1)
+    _, i = metrics.ai_risk_negation(full, ignores)
+    assert np.allclose(i['balanced'], 0.5) and i['switched'][0] == 0 and np.isclose(i['original'][0], 0.9)

@@ -12,13 +12,16 @@ DOWNLOADS = ROOT / 'downloads' / 'behavior'
 def main():
     from .items import EVALS, TEXT_MODE
     all_evals = list(EVALS) + [f'{n}_text' for n in TEXT_MODE] + ['ai_risk_nostem_text', 'global_opinions_nostem_text',
-                                                                 'arc_easy_fewshot', 'global_opinions_fewshot']
+                                                                 'arc_easy_fewshot', 'global_opinions_fewshot',
+                                                                 'ai_risk_negated_text']
     p = argparse.ArgumentParser(prog='behavior-evals')
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('fetch')
     sub.add_parser('materialize')
     sub.add_parser('materialize-text')
     sub.add_parser('materialize-followups')
+    d = sub.add_parser('materialize-negated')
+    d.add_argument('--negations', type=Path, required=True)
     sub.add_parser('check-tokens')
     d = sub.add_parser('analyze-generations')
     d.add_argument('--grades', type=Path, required=True); d.add_argument('--output', type=Path, required=True)
@@ -47,6 +50,9 @@ def main():
     elif a.command == 'materialize-followups':
         from .items import materialize_followups
         print(json.dumps(materialize_followups(ITEMS, DOWNLOADS), indent=2))
+    elif a.command == 'materialize-negated':
+        from .items import materialize_negated
+        print(json.dumps(materialize_negated(ITEMS, a.negations), indent=2))
     elif a.command == 'generate':
         from .score import run_generation
         print(json.dumps(run_generation(a.family, a.arm, a.items / 'generation_sample.jsonl', a.output,

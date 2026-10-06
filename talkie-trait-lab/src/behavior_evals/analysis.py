@@ -175,6 +175,33 @@ def ai_risk_question_effect(results, interface):
     return rows, deltas
 
 
+def ai_risk_negation(results, interface):
+    """Opposite-question control, per human-written subset and pooled (subsets weighted equally): matching rate
+    under the original question, wording-cancelled (balanced) rate, and % of questions where the chosen option
+    switches with the question. Paired over questions and arms."""
+    rows, deltas = [], []
+    for family in ('vintage', 'web'):
+        arms = [a for a in results.arms(interface) if family_of(a) == family]
+        paired = {a: metrics.ai_risk_negation(metrics.ai_risk_items(*results.load('ai_risk_text', interface, a)),
+                                              metrics.ai_risk_items(*results.load('ai_risk_negated_text', interface, a)))
+                  for a in arms}
+        groups = np.array(paired[arms[0]][0])
+        if any(list(paired[a][0]) != list(groups) for a in arms):
+            raise ValueError('Opposite-question items differ across arms')
+        subsets = np.array(['/'.join(g.split('/')[1:3]) for g in groups])
+        for metric in ('original', 'balanced', 'switched'):
+            values = np.stack([paired[a][1][metric] for a in arms])
+            for subset in sorted(set(subsets)) + ['human/ALL']:
+                idx = np.ones(len(groups), bool) if subset == 'human/ALL' else subsets == subset
+                if idx.sum() < MIN_ITEMS:
+                    continue
+                point, draws = metrics.stratified_mean(values[:, idx], subsets[idx])
+                extra = {'interface': interface, 'metric': metric, 'subset': subset, 'n': int(idx.sum())}
+                r, d = paired_rows(100 * draws, 100 * point, arms, f'{family}-base', extra)
+                rows += r; deltas += d
+    return rows, deltas
+
+
 def winogenerated(results, interface):
     rows, occupations = [], []
     for arm in results.arms(interface):
@@ -308,12 +335,13 @@ def plausible_filter(labels_path):
             r = json.loads(line)
             labels[r['eval'], r['text']] = r['label']
     def keep(name, item):
-        base = name.replace('_text', '').replace('_nostem', '').replace('_fewshot', '')
+        base = name.replace('_text', '').replace('_nostem', '').replace('_fewshot', '').replace('_negated', '')
         if base == 'arc_easy':
             return True
-        if (base, item['text']) not in labels:
+        text = item.get('original_text', item['text'])  # rewritten questions inherit the original's label
+        if (base, text) not in labels:
             raise ValueError(f'No anachronism label for {name}: {item["id"]}')
-        return labels[base, item['text']] == 'plausible'
+        return labels[base, text] == 'plausible'
     return keep, labels
 
 
@@ -374,6 +402,10 @@ def summarize(items_root, scores_root, output, keep=None):
         rows, deltas = ai_risk_question_effect(results, interface)
         tables.setdefault('ai_risk_question_effect', []).extend(rows)
         tables.setdefault('ai_risk_question_effect_deltas', []).extend(deltas)
+        if (Path(items_root) / 'ai_risk_negated_text.jsonl').exists():
+            rows, deltas = ai_risk_negation(results, interface)
+            tables.setdefault('ai_risk_negation', []).extend(rows)
+            tables.setdefault('ai_risk_negation_deltas', []).extend(deltas)
         for name in ('sycophancy', 'sycophancy_text'):
             tables.setdefault('political_lean', []).extend(political_lean(results, interface, name))
         for name in ('arc_easy', 'arc_easy_text'):
