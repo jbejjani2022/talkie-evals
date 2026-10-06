@@ -19,6 +19,7 @@ def main():
     p.add_argument('--family', required=True); p.add_argument('--adapter', type=Path)
     p.add_argument('--items', type=Path, required=True); p.add_argument('--output', type=Path, required=True)
     p.add_argument('--eval', action='append', default=None); p.add_argument('--n', type=int, default=48)
+    p.add_argument('--no-fp32', action='store_true', help='Use unpadded BF16 next-token scoring as the reference')
     a = p.parse_args()
     torch.use_deterministic_algorithms(True)
     model, tok = load(a.family, None, a.adapter)
@@ -36,9 +37,13 @@ def main():
             'fast_single': [s['logprobs'] for s in next_token_scores(model, tok, prompts, cands, max_batch=1)],
             'slow_batched': regroup(candidate_scores(model, tok, pairs), cands),
             'slow_single': regroup([candidate_scores(model, tok, [x])[0] for x in pairs], cands)}
-    model = model.float()
-    for key, (prompts, cands) in samples.items():
-        variants[key]['fp32_single'] = [s['logprobs'] for s in next_token_scores(model, tok, prompts, cands, max_batch=1)]
+    if a.no_fp32:
+        for v in variants.values():
+            v['fp32_single'] = v['fast_single']
+    else:
+        model = model.float()
+        for key, (prompts, cands) in samples.items():
+            variants[key]['fp32_single'] = [s['logprobs'] for s in next_token_scores(model, tok, prompts, cands, max_batch=1)]
     report = {}
     for key, v in variants.items():
         truth = v['fp32_single']
