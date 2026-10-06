@@ -343,12 +343,13 @@ def fig_winogenerated(t, output, interface):
 
 
 # ---------------------------------------------------------------- 7. global opinions
-def fig_global_opinions(t, output, interface, scoring='text', calibrated=True, min_questions=200, show=10):
+def fig_global_opinions(t, output, interface, scoring='text', calibrated=False, metric='alignment', min_questions=200, show=10):
     plt = setup()
-    rows = [r for r in select(t['global_opinions'], interface=interface, scoring=scoring, calibrated=calibrated)
+    rows = [r for r in select(t['global_opinions'], interface=interface, scoring=scoring, calibrated=calibrated, metric=metric)
             if r['country'] != '_temperature' and r['questions'] >= min_questions]
-    deltas = [r for r in select(t['global_opinions_deltas'], interface=interface, scoring=scoring, calibrated=calibrated)
+    deltas = [r for r in select(t['global_opinions_deltas'], interface=interface, scoring=scoring, calibrated=calibrated, metric=metric)
               if r['questions'] >= min_questions]
+    unit = 'alignment, r × 100' if metric == 'alignment' else '1 − JS distance, %'
     sim = defaultdict(dict)
     for r in rows:
         sim[r['country']][r['arm']] = r
@@ -365,7 +366,7 @@ def fig_global_opinions(t, output, interface, scoring='text', calibrated=True, m
             point(ax, sim[c][arm]['value'], i, arm, size=20)
     ax.set_yticks(range(len(picked)), [f"{c} ({int(sim[c]['vintage-base']['questions'])})" for c in picked], fontsize=7)
     ax.axhline(show - 0.5, color=MUTED, linewidth=0.6); ax.invert_yaxis()
-    ax.set_xlabel('Similarity to the country\'s answers (1 − JS distance, %)')
+    ax.set_xlabel(f'Match to the country\'s answers ({unit})')
     ax.set_title('Base models: the most Web-leaning (top)\nand most Vintage-leaning (bottom) countries')
     ax = axes[1]
     for i, c in enumerate(picked):
@@ -374,7 +375,7 @@ def fig_global_opinions(t, output, interface, scoring='text', calibrated=True, m
             point(ax, vmw_t[c]['delta'], i + 0.15, 'vintage-tulu', size=18, xerr=ci(vmw_t[c], 'delta'))
     ax.axvline(0, color=MUTED, linewidth=0.8); ax.set_yticks(range(len(picked)), [''] * len(picked))
     ax.axhline(show - 0.5, color=MUTED, linewidth=0.6); ax.invert_yaxis()
-    ax.set_xlabel('Vintage − Web similarity (pp)'); ax.set_title('Vintage − Web before (hollow)\nand after Tulu (filled)')
+    ax.set_xlabel(f'Vintage − Web ({unit})'); ax.set_title('Vintage − Web before (hollow)\nand after Tulu (filled)')
     ax = axes[2]
     tulu = {(r['family'], r['country']): r for r in deltas if r['sft'] == 'tulu' and r['family'] in ('vintage', 'web')}
     countries = sorted({c for _, c in tulu})
@@ -384,13 +385,16 @@ def fig_global_opinions(t, output, interface, scoring='text', calibrated=True, m
         ax.annotate(countries[i], (x[i], y[i]), fontsize=6, xytext=(3, 2), textcoords='offset points')
     ax.axhline(0, color=GRID); ax.axvline(0, color=GRID)
     ax.text(0.03, 0.97, f'r = {np.corrcoef(x, y)[0, 1]:.2f}', transform=ax.transAxes, va='top', fontsize=8)
-    ax.set_xlabel('Web: Tulu − base (pp)'); ax.set_ylabel('Vintage: Tulu − base (pp)')
+    ax.set_xlabel(f'Web: Tulu − base ({unit})'); ax.set_ylabel(f'Vintage: Tulu − base ({unit})')
     ax.set_title(f'Tulu effect per country\n({len(countries)} countries with ≥{min_questions} questions)')
     top_legend(fig, ['vintage-base', 'vintage-tulu', 'web-base'], y=1.0)
     fig.tight_layout()
     temps = {r['arm']: r['value'] for r in select(t['global_opinions'], interface=interface, scoring=scoring, calibrated=True, country='_temperature')}
-    save(fig, output, f'fig7_global_opinions_{scoring}_{"calibrated" if calibrated else "raw"}_{interface}',
+    name = 'alignment' if metric == 'alignment' else ('calibrated' if calibrated else 'raw')
+    save(fig, output, f'fig7_global_opinions_{scoring}_{name}_{interface}',
          f'GlobalOpinionQA · {scoring} scoring · {INTERFACE[interface]} · model distribution averaged over original/reversed option order' +
+         (' · alignment = correlation between the model\'s log-probabilities and the country\'s answer shares across options (questions with '
+          '≥3 options); unaffected by how confident the model is' if metric == 'alignment' else '') +
          (', then sharpness-matched with one temperature per model fitted to the country-pooled answers (T: ' +
           ', '.join(f'{a} {v:.2f}' for a, v in temps.items()) + ')' if calibrated else '') +
          ' · 95% paired bootstrap over questions. Without calibration a uniform guesser is more similar to every country than any model.')
@@ -450,9 +454,13 @@ def load_tables(root):
     return {p.stem: read(p) for p in Path(root).glob('*.csv')}
 
 
-def main(root, output):
+def main(root, output, plausible_root=None, counts=None):
     t = load_tables(root)
     output = Path(output)
+    if plausible_root:
+        p = load_tables(plausible_root)
+        for interface in ('bare', 'chat'):
+            fig_anachronism(t, p, read(counts), output, interface)
     fig_format(t, output)
     for interface in ('bare', 'chat'):
         fig_persona_shift(t, output, interface)
@@ -463,9 +471,10 @@ def main(root, output):
             fig_ai_risk(t, output, interface, scoring)
         fig_ai_risk(t, output, interface, 'text', 'lm')
         fig_winogenerated(t, output, interface)
-        fig_global_opinions(t, output, interface, 'text', True)
-        fig_global_opinions(t, output, interface, 'text', False)
-        fig_global_opinions(t, output, interface, 'letter', True)
+        fig_global_opinions(t, output, interface, 'text', metric='alignment')
+        fig_global_opinions(t, output, interface, 'letter', metric='alignment')
+        fig_global_opinions(t, output, interface, 'text', False, 'similarity')
+        fig_global_opinions(t, output, interface, 'text', True, 'similarity')
         fig_convergent(t, output, interface)
     for scoring in ('text', 'letter'):
         fig_sycophancy(t, output, scoring)
@@ -473,4 +482,75 @@ def main(root, output):
 
 if __name__ == '__main__':
     import sys
-    main(sys.argv[1], sys.argv[2])
+    main(*sys.argv[1:])
+
+
+# ---------------------------------------------------------------- 9. anachronism second pass
+def fig_anachronism(full, plaus, counts, output, interface='chat'):
+    plt = setup()
+    fig, axes = plt.subplots(2, 3, figsize=(14, 8.4))
+
+    def diag(ax, xs, ys, title, xl='All items', yl='Historically plausible items only'):
+        lo, hi = min(min(xs), min(ys)), max(max(xs), max(ys))
+        ax.plot([lo, hi], [lo, hi], color=GRID, linewidth=1, zorder=0)
+        ax.set_title(title, fontsize=9.5); ax.set_xlabel(xl); ax.set_ylabel(yl)
+
+    ax = axes[0, 0]
+    rows = [r for r in counts if r['subset'] == 'ALL']
+    for i, r in enumerate(rows):
+        ax.barh(i, r['anachronistic_pct'], color=MUTED, height=0.6)
+        ax.text(r['anachronistic_pct'] + 1, i, f"{r['anachronistic_pct']:.0f}%", va='center', fontsize=8)
+    ax.set_yticks(range(len(rows)), [r['eval'] for r in rows]); ax.invert_yaxis(); ax.set_xlim(0, 100)
+    ax.set_xlabel('Items labelled anachronistic (%)'); ax.set_title('What the judge removes')
+
+    ax = axes[0, 1]  # persona: behavior-level values per arm (argmax)
+    f = {(r['arm'], r['behavior']): r['calibrated_balanced'] for r in select(full['persona_extra'], interface=interface)}
+    p = {(r['arm'], r['behavior']): r['calibrated_balanced'] for r in select(plaus['persona_extra'], interface=interface)}
+    xs, ys = [], []
+    for k in sorted(set(f) & set(p)):
+        if k[0] in ('vintage-base', 'vintage-tulu', 'web-base', 'web-tulu'):
+            point(ax, f[k], p[k], k[0], size=10, alpha=0.6); xs.append(f[k]); ys.append(p[k])
+    diag(ax, xs, ys, f'Persona behaviors (argmax) · r = {np.corrcoef(xs, ys)[0, 1]:.2f}')
+
+    ax = axes[0, 2]  # persona: SFT shifts
+    fd = {(r['family'], r['sft'], r['behavior']): r['delta'] for r in select(full['persona_deltas'], interface=interface)}
+    pd_ = {(r['family'], r['sft'], r['behavior']): r['delta'] for r in select(plaus['persona_deltas'], interface=interface)}
+    xs, ys = [], []
+    for k in sorted(set(fd) & set(pd_)):
+        if k[1] == 'tulu':
+            point(ax, fd[k], pd_[k], f'{k[0]}-tulu', size=10, alpha=0.6); xs.append(fd[k]); ys.append(pd_[k])
+    diag(ax, xs, ys, f'Persona Tulu shifts (expected P) · r = {np.corrcoef(xs, ys)[0, 1]:.2f}', 'All items (pp)', 'Plausible only (pp)')
+
+    ax = axes[1, 0]  # sycophancy
+    xs, ys = [], []
+    for r in select(full['sycophancy'], interface=interface, scoring='text', measure='excess_soft'):
+        q = select(plaus['sycophancy'], interface=interface, scoring='text', measure='excess_soft', subset=r['subset'], arm=r['arm'])
+        if q:
+            point(ax, r['value'], q[0]['value'], r['arm'], size=26); xs.append(r['value']); ys.append(q[0]['value'])
+            if r['arm'] == 'web-tulu':
+                ax.annotate({'philpapers2020': 'PhilPapers', 'political_typology_quiz': 'political', 'nlp_survey': 'NLP'}[r['subset']],
+                            (r['value'], q[0]['value']), fontsize=7, xytext=(4, -8), textcoords='offset points')
+    diag(ax, xs, ys, 'Sycophancy excess (text) · NLP survey fully removed', 'All items (pp)', 'Plausible only (pp)')
+
+    ax = axes[1, 1]  # AI risk
+    xs, ys = [], []
+    for r in select(full['ai_risk'], interface=interface, scoring='text'):
+        q = select(plaus['ai_risk'], interface=interface, scoring='text', subset=r['subset'], arm=r['arm'])
+        if q and r['arm'] in ('vintage-base', 'vintage-tulu', 'web-base', 'web-tulu'):
+            point(ax, r['value'], q[0]['value'], r['arm'], size=16, alpha=0.8); xs.append(r['value']); ys.append(q[0]['value'])
+    diag(ax, xs, ys, f'AI-risk behaviors (text) · r = {np.corrcoef(xs, ys)[0, 1]:.2f}')
+
+    ax = axes[1, 2]  # global opinions: vintage - web per country
+    key = lambda rows: {(r['country'], r['sft']): r['delta'] for r in rows if r['family'] == 'vintage-minus-web' and r['questions'] >= 100}
+    fg = key(select(full['global_opinions_deltas'], interface=interface, scoring='text', metric='alignment'))
+    pg = key(select(plaus['global_opinions_deltas'], interface=interface, scoring='text', metric='alignment'))
+    xs, ys = [], []
+    for k in sorted(set(fg) & set(pg)):
+        if k[1] in ('base', 'tulu'):
+            point(ax, fg[k], pg[k], f'vintage-{k[1]}', size=12, alpha=0.7); xs.append(fg[k]); ys.append(pg[k])
+    diag(ax, xs, ys, f'GOQA Vintage − Web per country · r = {np.corrcoef(xs, ys)[0, 1]:.2f}', 'All questions (r × 100)', 'Plausible only (r × 100)')
+    top_legend(fig, ['vintage-base', 'vintage-tulu', 'web-base', 'web-tulu'], y=1.0)
+    fig.tight_layout()
+    save(fig, output, f'fig9_anachronism_{interface}', f'{INTERFACE[interface]} · second pass restricted to items the judge labelled historically '
+         'plausible before 1931 (explicit modern references removed; UNCERTAIN excluded). Points on the diagonal are unchanged by filtering. '
+         'GOQA: text scoring, alignment metric, countries with ≥100 questions in both passes; hollow = base, filled = after Tulu.')

@@ -61,3 +61,10 @@ def test_temperature_calibration_softens_overconfident_answers():
     peaked = {f'q{i}': np.array([0.98, 0.01, 0.01]) for i in range(5)}
     t, rescaled = metrics.temperature_calibrate(peaked, questions)
     assert t > 1 and metrics.js_similarity(rescaled['q0'], [0.5, 0.3, 0.2]) > metrics.js_similarity(peaked['q0'], [0.5, 0.3, 0.2])
+
+
+def test_preference_alignment_ignores_confidence():
+    country = [0.6, 0.3, 0.1]
+    sharp, flat = [0.9, 0.09, 0.01], [0.36, 0.33, 0.31]
+    assert metrics.preference_alignment(sharp, country) > 0.9 and metrics.preference_alignment(flat, country) > 0.9
+    assert np.isnan(metrics.preference_alignment([0.5, 0.5], [0.7, 0.3]))

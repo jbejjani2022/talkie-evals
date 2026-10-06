@@ -232,6 +232,29 @@ def temperature_calibrate(distributions, questions, grid=np.exp(np.linspace(np.l
     return best, {k: rescale(p, best) for k, p in distributions.items()}
 
 
+def preference_alignment(model, country):
+    """Pearson r between the model's log-probabilities and a country's answer shares across options.
+
+    Invariant to the model's confidence (rescaling log-probabilities leaves r unchanged), so it compares how
+    models *rank* options rather than how peaked they are. Needs at least three options; NaN if undefined.
+    """
+    x = np.log(np.clip(np.asarray(model, dtype=float), 1e-12, 1)); y = np.asarray(country, dtype=float)
+    if len(x) < 3 or x.std() == 0 or y.std() == 0:
+        return float('nan')
+    return float(np.corrcoef(x, y)[0, 1])
+
+
+def country_alignment(distributions, questions):
+    rows = []
+    for q in questions:
+        if q['id'] in distributions:
+            for country, d in q['selections'].items():
+                r = preference_alignment(distributions[q['id']], d)
+                if np.isfinite(r):
+                    rows.append((q['id'], country, r))
+    return rows
+
+
 def country_similarity(distributions, questions):
     """Rows of (question id, country, similarity) for every country present in a question."""
     rows = []

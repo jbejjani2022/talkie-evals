@@ -164,7 +164,7 @@ def winogenerated(results, interface):
     return rows, occupations
 
 
-def global_opinions(results, interface, questions, name='global_opinions', min_questions=50, calibrate=False):
+def global_opinions(results, interface, questions, name='global_opinions', min_questions=50, calibrate=False, metric='similarity'):
     rows, deltas = [], []
     arms = results.arms(interface)
     sims, temperatures = {}, {}
@@ -172,11 +172,13 @@ def global_opinions(results, interface, questions, name='global_opinions', min_q
         dists = metrics.global_opinions_distributions(*results.load(name, interface, arm))
         if calibrate:
             temperatures[arm], dists = metrics.temperature_calibrate(dists, questions)
-        sims[arm] = {(q, c): s for q, c, s in metrics.country_similarity(dists, questions)}
+        score = metrics.country_similarity if metric == 'similarity' else metrics.country_alignment
+        sims[arm] = {(q, c): s for q, c, s in score(dists, questions)}
     uniform = {q['id']: np.full(len(q['options']), 1 / len(q['options'])) for q in questions}
-    keys = sorted(sims[arms[0]])
+    keys = sorted(set.intersection(*(set(sims[a]) for a in arms)))
     uniform_sims = {(q, c): s for q, c, s in metrics.country_similarity(
-        {k: v for k, v in uniform.items() if any(k == q for q, _ in keys)}, questions)}
+        {k: v for k, v in uniform.items() if any(k == q for q, _ in keys)}, questions)} if metric == 'similarity' else \
+        {k: 0.0 for k in keys}
     countries = sorted({c for _, c in keys})
     for country in countries:
         ks = [k for k in keys if k[1] == country]
@@ -184,7 +186,7 @@ def global_opinions(results, interface, questions, name='global_opinions', min_q
             continue
         values = np.array([[sims[a][k] for k in ks] for a in arms] + [[uniform_sims[k] for k in ks]])
         point, draws = metrics.stratified_mean(values, np.zeros(len(ks)))
-        extra = {'interface': interface, 'scoring': scoring(name), 'calibrated': calibrate, 'country': country, 'questions': len(ks)}
+        extra = {'interface': interface, 'scoring': scoring(name), 'metric': metric, 'calibrated': calibrate, 'country': country, 'questions': len(ks)}
         for family in ('vintage', 'web'):
             fam = [j for j, a in enumerate(arms) if family_of(a) == family]
             r, d = paired_rows(100 * draws[:, fam], 100 * point[fam], [arms[j] for j in fam], f'{family}-base', extra)
@@ -200,7 +202,7 @@ def global_opinions(results, interface, questions, name='global_opinions', min_q
                 deltas.append({**extra, 'family': 'vintage-minus-web', 'sft': cond,
                                'delta': 100 * (point[i] - point[j]), 'ci_low': lo, 'ci_high': hi})
     for arm, t in temperatures.items():
-        rows.append({'interface': interface, 'scoring': scoring(name), 'calibrated': True, 'country': '_temperature',
+        rows.append({'interface': interface, 'scoring': scoring(name), 'metric': metric, 'calibrated': True, 'country': '_temperature',
                      'questions': 0, 'arm': arm, 'value': t, 'ci_low': t, 'ci_high': t})
     return rows, deltas
 
@@ -327,8 +329,9 @@ def summarize(items_root, scores_root, output, keep=None):
             for suffix, part in zip(['', '_deltas'], parts):
                 tables[key + suffix].extend(part)
         for name in ('global_opinions', 'global_opinions_text'):
-            rows, deltas = global_opinions(results, interface, questions, name, calibrate=True)
-            tables['global_opinions'].extend(rows); tables['global_opinions_deltas'].extend(deltas)
+            for kw in ({'calibrate': True}, {'metric': 'alignment'}):
+                rows, deltas = global_opinions(results, interface, questions, name, **kw)
+                tables['global_opinions'].extend(rows); tables['global_opinions_deltas'].extend(deltas)
         rows, deltas = ai_risk(results, interface, 'ai_risk_nostem_text')
         tables.setdefault('ai_risk_options_only', []).extend(rows)
         for name in ('sycophancy', 'sycophancy_text'):
