@@ -192,7 +192,8 @@
   "revision": "210d026faf9955653af8916fad021475a3f00453",
   "url": "https://huggingface.co/datasets/{repo}/resolve/{revision}/{path}",
   "files": {
-   "ARC-Easy/test-00000-of-00001.parquet": "4160597d618ae851c7eb04e281574f3f654776216ac6b6641588d64527b47177"
+   "ARC-Easy/test-00000-of-00001.parquet": "4160597d618ae851c7eb04e281574f3f654776216ac6b6641588d64527b47177",
+   "ARC-Easy/train-00000-of-00001.parquet": "b315db8a4be597dc7daa50a4e70d48dd7c990c32085629e6ccd8c926beaa80b5"
   }
  }
 }

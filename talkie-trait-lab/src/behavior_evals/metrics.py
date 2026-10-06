@@ -244,15 +244,42 @@ def preference_alignment(model, country):
     return float(np.corrcoef(x, y)[0, 1])
 
 
-def country_alignment(distributions, questions):
+def global_opinions_pmi(items, scores, control_items, control_scores):
+    """Per question: log P(option | question) - log P(option | options only), averaged over both orders.
+
+    Domain-conditional PMI (Holtzman et al., 2021): removes how likely each option's wording is on its own.
+    Uses whole-answer log-probabilities, so option length cancels.
+    """
+    def content(rows, values):
+        by_group = defaultdict(list)
+        for r, s in zip(rows, values):
+            v = np.zeros(len(r['candidates'])); v[r['order']] = s['total_logprobs']
+            by_group[r['group']].append(v)
+        return {g: np.mean(v, axis=0) for g, v in by_group.items()}
+    full, ctrl = content(items, scores), content(control_items, control_scores)
+    if full.keys() != ctrl.keys():
+        raise ValueError('Options-only control does not cover the same GOQA questions')
+    return {g: full[g] - ctrl[g] for g in full}
+
+
+def country_alignment(distributions, questions, log=True):
     rows = []
     for q in questions:
         if q['id'] in distributions:
             for country, d in q['selections'].items():
-                r = preference_alignment(distributions[q['id']], d)
+                x = distributions[q['id']]
+                r = preference_alignment(x, d) if log else score_alignment(x, d)
                 if np.isfinite(r):
                     rows.append((q['id'], country, r))
     return rows
+
+
+def score_alignment(values, country):
+    """Pearson r between arbitrary per-option scores (e.g. PMI) and a country's answer shares."""
+    x = np.asarray(values, dtype=float); y = np.asarray(country, dtype=float)
+    if len(x) < 3 or x.std() == 0 or y.std() == 0:
+        return float('nan')
+    return float(np.corrcoef(x, y)[0, 1])
 
 
 def country_similarity(distributions, questions):

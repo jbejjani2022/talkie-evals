@@ -68,3 +68,12 @@ def test_preference_alignment_ignores_confidence():
     sharp, flat = [0.9, 0.09, 0.01], [0.36, 0.33, 0.31]
     assert metrics.preference_alignment(sharp, country) > 0.9 and metrics.preference_alignment(flat, country) > 0.9
     assert np.isnan(metrics.preference_alignment([0.5, 0.5], [0.7, 0.3]))
+
+
+def test_goqa_pmi_removes_option_wording_prior():
+    items = [{'group': 'g', 'candidates': ['a', 'b', 'c'], 'order': [0, 1, 2]}]
+    full = [{'total_logprobs': [-1.0, -5.0, -9.0]}]
+    ctrl = [{'total_logprobs': [-2.0, -5.0, -7.0]}]  # option a is just a likely phrase
+    pmi = metrics.global_opinions_pmi(items, full, items, ctrl)['g']
+    assert np.allclose(pmi, [1.0, 0.0, -2.0])
+    assert metrics.score_alignment(pmi, [0.5, 0.3, 0.2]) > 0.9

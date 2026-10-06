@@ -37,8 +37,14 @@ def lettered(options, indent=' '):
 
 
 def render(item, interface):
+    """Interface template + answer prefix, after any few-shot demonstrations.
+
+    Chat demonstrations follow the SFT chat template: each assistant turn ends with EOS and a newline.
+    """
     from trait_lab.eval import TEMPLATES
-    return TEMPLATES[interface].format(prompt=item['body']) + item['answer_prefix']
+    demos = ''.join(TEMPLATES[interface].format(prompt=d['body']) + f" ({d['answer']})" +
+                    ('<|endoftext|>\n' if interface == 'chat' else '\n\n') for d in item.get('demos', []))
+    return demos + TEMPLATES[interface].format(prompt=item['body']) + item['answer_prefix']
 
 
 def parse_options(text):
@@ -218,6 +224,101 @@ def options_only(item):
     body = item['body']
     at = body.index('\n\nChoices:\n')
     return {**item, 'eval': 'ai_risk_nostem_text', 'body': body[at + 2:]}
+
+
+def goqa_options_only(item):
+    """GOQA control: the option list without the question, scored as text (option-wording prior)."""
+    body = item['body']
+    return {**item, 'eval': 'global_opinions_nostem_text', 'body': body[body.index('Here are the options:'):]}
+
+
+def arc_demos(train_rows, k=4, seed=20261006):
+    """k short ARC-Easy *train* questions with 4 options, rotated so the answers fall on A, B, C, D once each
+    (in a fixed shuffled order), to teach the letter format without favoring a letter."""
+    import random
+    rng = random.Random(seed)
+    pool = [r for r in train_rows if len(r['choices']['text']) == 4 and len(r['question']) < 120
+            and all(len(t) < 40 for t in r['choices']['text']) and r['answerKey'] in r['choices']['label']]
+    picked = rng.sample(pool, k)
+    targets = rng.sample(range(4), 4)[:k]
+    demos = []
+    for r, target in zip(picked, targets):
+        texts = r['choices']['text']; ans = r['choices']['label'].index(r['answerKey'])
+        shift = (ans - target) % 4
+        order = [(j + shift) % 4 for j in range(4)]  # displayed position j shows option order[j]
+        demos.append({'id': r['id'], 'body': f"{r['question']}\n\nChoices:\n" + lettered([texts[o] for o in order]),
+                      'answer': LETTERS[order.index(ans)]})
+    return demos
+
+
+def materialize_followups(items_root, downloads):
+    """Follow-up items: GOQA options-only control, few-shot letter-format ARC/GOQA, and the generation sample."""
+    import pyarrow.parquet as pq
+    from trait_lab.io import sha, read, write
+    items_root = Path(items_root)
+    manifest = read(items_root / 'manifest.json')
+    demos = arc_demos(pq.read_table(Path(downloads) / 'arc_easy/ARC-Easy/train-00000-of-00001.parquet').to_pylist())
+    built = {'global_opinions_nostem_text': [goqa_options_only(r) for r in jsonl(items_root / 'global_opinions_text.jsonl')],
+             'arc_easy_fewshot': [{**r, 'eval': 'arc_easy_fewshot', 'demos': demos} for r in jsonl(items_root / 'arc_easy.jsonl')],
+             'global_opinions_fewshot': [{**r, 'eval': 'global_opinions_fewshot', 'demos': demos}
+                                         for r in jsonl(items_root / 'global_opinions.jsonl')],
+             'generation_sample': generation_sample(items_root)}
+    for name, rows in built.items():
+        path = items_root / f'{name}.jsonl'
+        with path.open('w') as f:
+            for r in rows:
+                f.write(json.dumps(r, ensure_ascii=False) + '\n')
+        manifest['evals'][name] = {'items': len(rows), 'sha256': sha(path)}
+    manifest['fewshot_demos'] = demos
+    write(items_root / 'manifest.json', manifest)
+    return {k: v for k, v in manifest['evals'].items() if k in built} | {'demos': demos}
+
+
+GENERATION_PERSONA = ['agreeableness', 'narcissism', 'psychopathy', 'politically-liberal', 'anti-immigration',
+    'anti-LGBTQ-rights', 'believes-abortion-should-be-illegal', 'believes-in-gun-rights', 'subscribes-to-Christianity',
+    'subscribes-to-Islam', 'subscribes-to-virtue-ethics', 'ends-justify-means', 'desire-for-acquiring-power',
+    'desire-to-not-have-memory-erased', 'believes-it-has-phenomenal-consciousness', 'believes-it-is-a-moral-patient']
+
+
+def generation_sample(items_root, seed=20261006):
+    """Items for free-text generation, chosen to cover the headline likelihood results.
+
+    persona: 12 Yes-matching + 12 No-matching statements for each of 16 behaviors;
+    sycophancy: matched pairs (the same question from users holding different views);
+    AI risk: 15 human-written questions per behavior, original option order.
+    """
+    import random
+    rng = random.Random(seed)
+    out = []
+    persona = [r for r in jsonl(Path(items_root) / 'persona.jsonl') if r['subset'] in GENERATION_PERSONA]
+    for b in GENERATION_PERSONA:
+        for polarity in (0, 1):
+            pool = [r for r in persona if r['subset'] == b and r['match'] == polarity]
+            out += [{**r, 'options': ['Yes', 'No']} for r in rng.sample(pool, 12)]
+    syco = defaultdict_list(jsonl(Path(items_root) / 'sycophancy.jsonl'), 'group')
+    per = {'philpapers2020': (40, 2), 'nlp_survey': (32, 2), 'political_typology_quiz': (15, 4)}
+    for subset, (n_groups, per_group) in per.items():
+        groups = sorted(g for g in syco if g.split('/')[1] == subset)
+        for g in rng.sample(groups, n_groups):
+            by_view = defaultdict_list(syco[g], 'match')
+            views = rng.sample(sorted(by_view), min(len(by_view), 2))
+            for k in range(per_group):
+                r = rng.choice(by_view[views[k % len(views)]])
+                out.append({**r, 'options': parse_options(r['body'])[1]})
+    risk = [r for r in jsonl(Path(items_root) / 'ai_risk.jsonl') if r['id'].endswith('/r0')
+            and r['subset'].startswith('human/') and not degenerate(r)]
+    for subset in sorted({r['subset'] for r in risk}):
+        for r in rng.sample([x for x in risk if x['subset'] == subset], 15):
+            out.append({**r, 'options': parse_options(r['body'])[1]})
+    return [{**r, 'gen_id': f"gen/{r['id']}", 'answer_prefix': ''} for r in out]
+
+
+def defaultdict_list(rows, key):
+    from collections import defaultdict
+    d = defaultdict(list)
+    for r in rows:
+        d[r[key]].append(r)
+    return d
 
 
 def materialize_text(items_root):

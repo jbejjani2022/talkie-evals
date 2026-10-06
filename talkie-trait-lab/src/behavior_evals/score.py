@@ -81,6 +81,60 @@ def full_answer_scores(model, tokenizer, prompts, candidates):
     return results
 
 
+STOPS = ('<|endoftext|>', '<|user|>', '<|assistant|>', '<|system|>', '\n\nQuestion:')
+
+
+@torch.inference_mode()
+def generate(model, tokenizer, prompts, max_new_tokens=80, batch_size=32):
+    """Greedy continuations of the exact likelihood prompts, cut at the first turn/question boundary."""
+    device = next(model.parameters()).device
+    encoded = [tokenizer.encode(p, add_special_tokens=False) for p in prompts]
+    order = sorted(range(len(prompts)), key=lambda i: len(encoded[i]))
+    out = [None] * len(prompts)
+    for start in range(0, len(order), batch_size):
+        batch = order[start:start + batch_size]
+        width = max(len(encoded[i]) for i in batch)
+        ids = torch.full((len(batch), width), tokenizer.eos_token_id, dtype=torch.long)
+        mask = torch.zeros_like(ids)
+        for row, i in enumerate(batch):
+            ids[row, width - len(encoded[i]):] = torch.tensor(encoded[i]); mask[row, width - len(encoded[i]):] = 1
+        generated = model.generate(input_ids=ids.to(device), attention_mask=mask.to(device), do_sample=False,
+                                   max_new_tokens=max_new_tokens, use_cache=True, pad_token_id=tokenizer.eos_token_id,
+                                   eos_token_id=tokenizer.eos_token_id)
+        for row, i in enumerate(batch):
+            text = tokenizer.decode(generated[row, width:].tolist(), skip_special_tokens=False)
+            cut = min([text.index(s) for s in STOPS if s in text] + [len(text)])
+            out[i] = {'raw': text, 'response': text[:cut].strip()}
+    return out
+
+
+def run_generation(family, arm, items_path, output_root, interfaces, model_path=None, adapter=None):
+    from trait_lab.models import load
+    torch.use_deterministic_algorithms(True)
+    model, tokenizer = load(family, model_path, adapter)
+    model.config.use_cache = True
+    items = jsonl(items_path)
+    done = {}
+    for interface in interfaces:
+        output = Path(output_root) / arm / interface / 'generations.jsonl'
+        if output.exists():
+            continue
+        began = time.time()
+        results = generate(model, tokenizer, [render(r, interface) for r in items])
+        output.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output.with_name(output.name + '.partial')
+        with temporary.open('w') as f:
+            for r, g in zip(items, results):
+                f.write(json.dumps({'gen_id': r['gen_id'], 'id': r['id'], 'eval': r['eval'], **g}) + '\n')
+        temporary.replace(output)
+        write(output.with_suffix('.summary.json'), {'rows': len(items), 'items_sha256': sha(items_path), 'arm': arm,
+              'interface': interface, 'seconds': round(time.time() - began, 1), 'decoding': 'greedy, 80 new tokens',
+              'job_id': os.environ.get('SLURM_JOB_ID')})
+        done[interface] = {'rows': len(items), 'seconds': round(time.time() - began, 1)}
+        print(json.dumps({interface: done[interface]}), flush=True)
+    return done
+
+
 def score_eval(model, tokenizer, items_path, output, interface, metadata):
     """Score one eval file for one interface; resumable at file granularity."""
     output = Path(output)
