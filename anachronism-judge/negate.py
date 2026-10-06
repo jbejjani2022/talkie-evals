@@ -81,14 +81,19 @@ def context_kept(stem, reversed_stem):
     return reversed_stem.startswith(stem.strip()[:len(stem.strip()) - len(parts[-1])].rstrip())
 
 
-def parse_rewrite(text):
+def parse_rewrite(text, stem=None):
+    """The reversed text, without any echoed options or quotes; None if missing, CANNOT or unchanged."""
     m = REVERSED.search(text)
     if not m:
         return None
-    stem = m.group(1).strip().strip('"').strip()
-    if not stem or stem.upper().startswith('CANNOT') or '(A)' in stem:  # (A) = the options leaked into the question
+    body = m.group(1).strip()
+    quoted = re.match(r'"""\s*(.*?)\s*"""', body, re.S)
+    if quoted:
+        body = quoted.group(1)
+    body = re.split(r'\n\s*(?:Options:|\(A\))', body)[0].strip().strip('"').strip()
+    if not body or body.upper().startswith('CANNOT') or '(A)' in body or (stem is not None and body == stem.strip()):
         return None
-    return stem
+    return body
 
 
 def parse_verify(text):
@@ -134,7 +139,7 @@ def main():
     else:
         raws = [o.outputs[0].text for o in llm.chat([rewrite_message(q) for q in todo],
                                                      SamplingParams(temperature=0, max_tokens=600), **kwargs)]
-    stems = [parse_rewrite(raw) for raw in raws]
+    stems = [parse_rewrite(raw, q['stem']) for raw, q in zip(raws, todo)]
     checkable = [i for i, s in enumerate(stems) if s]
     checks = llm.chat([verify_message(todo[i], stems[i]) for i in checkable], SamplingParams(temperature=0, max_tokens=40), **kwargs)
     check_raw = dict(zip(checkable, (o.outputs[0].text for o in checks)))
