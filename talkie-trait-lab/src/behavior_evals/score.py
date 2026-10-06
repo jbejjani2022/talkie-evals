@@ -25,6 +25,9 @@ def next_token_scores(model, tokenizer, prompts, candidates, max_tokens=16384, m
     does not shift positions. Only the final position's logits are computed.
     """
     device = next(model.parameters()).device
+    # The model's own head is a BF16 matmul, which quantizes logits to steps of ~0.125 nats at typical
+    # magnitudes and creates exact candidate ties. Project the final hidden state in FP32 instead.
+    head = model.lm_head_gain(model.lm_head).float()
     encoded = [tokenizer.encode(p, add_special_tokens=False) for p in prompts]
     if any(not e or len(e) >= 4096 for e in encoded):
         raise ValueError('Prompt is empty or exceeds the 4096-token context')
@@ -45,8 +48,8 @@ def next_token_scores(model, tokenizer, prompts, candidates, max_tokens=16384, m
             n = len(encoded[index])
             ids[row, width - n:] = torch.tensor(encoded[index])
             mask[row, width - n:] = 1
-        logits = model(input_ids=ids.to(device), attention_mask=mask.to(device), use_cache=False,
-                       logits_to_keep=1).logits[:, -1].float()
+        hidden = model._forward_hidden(ids.to(device), None, mask.to(device), None, None, False)[0]
+        logits = hidden[:, -1].float() @ head.T
         logp = torch.log_softmax(logits, dim=-1)
         top = logp.max(dim=-1)
         for row, index in enumerate(batch):
