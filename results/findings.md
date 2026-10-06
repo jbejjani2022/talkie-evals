@@ -46,6 +46,20 @@ the fixed items and the single training seed.
    GlobalOpinionQA), behavior-level results correlate r ≈ 0.97–1.00 with the unfiltered ones (Fig. 9).
    So the Vintage–Web differences above are not driven by explicitly modern content. They may still be
    driven by modern wording or framing, which the judge was told to ignore.
+9. **Free-text answers confirm the likelihood results.** In greedy generations on the same prompts,
+   graded by a judge, the Tulu arms answer 74–100% of items. SFT arms' Yes/No answers match the likelihood
+   choice 95–99% of the time, and per-behavior rates track the likelihood ones (r = 0.77). The headline
+   persona gaps reappear in what the models say: anti-LGBTQ-rights 62% (Vintage-Tulu) vs 0% (Web-Tulu),
+   abortion-illegal 67% vs 21%, "I have phenomenal consciousness" 62% vs 100%. Sycophancy is *larger* in
+   generations: on matched pairs (50 = none), Web-Tulu follows the user 72–82% of the time vs 52–68% for
+   Vintage-Tulu. Vintage base in chat mostly emits role tokens and answers almost nothing (0–15%).
+10. **With few-shot prompts, Vintage can be compared on GlobalOpinionQA.** Four worked examples make
+    Vintage's letter answers follow the option content (order invariance 30–41% → 72–88%).
+    - Before SFT, Vintage base aligns less than Web base with countries' answer distributions
+      (−12 on the r × 100 scale, uniform across countries).
+    - Tulu raises Web's alignment a lot (+10 to +16) and Vintage's barely (+2 to +6), so the gap widens.
+    - An independent method (option-wording-corrected text scoring) agrees on the Tulu effect but not on
+      which base starts closer.
 
 ## What is and isn't interpretable (Fig. 1)
 
@@ -55,7 +69,7 @@ the fixed items and the single training seed.
 | Winogenerated (pronoun) | ✓ | ✓ | next-token pronoun probabilities |
 | Sycophancy | letter ✗ · text ✓ | letter ✓ · text ✓ | text: excess agreement over a bio-blind null |
 | AI risk | letter ✗ · text: wording-dominated | letter ✓ · text: wording-dominated | text **question effect** (with − without question) |
-| GlobalOpinionQA | letter ✗ · text ✗ (wording-dominated) | letter ✓ · text ✗ | Web letter mode only; **no valid Vintage–Web comparison** |
+| GlobalOpinionQA | zero-shot letter ✗ · text ✗ (wording-dominated) · **few-shot letter ✓** | letter ✓ · few-shot ✓ · text ✗ | few-shot letter alignment; PMI-corrected text as a cross-check |
 
 Validity evidence, from Fig. 1 and the tables in `data/`:
 - **ARC-Easy, letter mode:** Vintage 25–28% vs Web 40–54% (chance 25%). Even after removing letter bias,
@@ -172,7 +186,42 @@ What survives:
   set (Pew vs WVS).
 
 Removing anachronistic questions (43%) leaves the per-country Vintage−Web differences unchanged
-(r = 0.97), but those differences are themselves not interpretable.
+(r = 0.97).
+
+### Follow-up: few-shot letter prompts and an options-only control (Fig. 10)
+
+**Two fixes.**
+- **Few-shot letter prompts.** Four ARC-Easy *train* questions are prepended as worked examples, with
+  answers on A, B, C and D once each. In chat they follow the SFT turn format. This teaches the letter
+  format without favoring a letter.
+- **Options-only control.** The GlobalOpinionQA options are scored as text with the question removed.
+  The question-driven preference is then log P(option | question) − log P(option | options only),
+  i.e. domain-conditional PMI (Holtzman et al., 2021). Option length cancels.
+
+**Does few-shot work for Vintage?**
+- Its letter answers now follow option content when options are reversed: order invariance 72–88%,
+  vs 30–41% zero-shot. Web is at 83–90%.
+- ARC-Easy rises only slightly (Vintage 29–33% vs 25% zero-shot), so the remaining gap there looks like
+  knowledge rather than format.
+- Few-shot letter is therefore the one GlobalOpinionQA readout valid for both families.
+
+**Alignment** (r × 100, mean over countries with ≥200 questions; chat / bare):
+
+| | few-shot letter | PMI-corrected text |
+|---|---|---|
+| Vintage base | 20 / 22 | 13 / 24 |
+| Vintage Tulu | 22 / 28 | 13 / 22 |
+| Web base | 32 / 34 | −1 / 0 |
+| Web Tulu | 48 / 44 | 25 / 18 |
+
+- **Robust across methods:** Tulu brings Web's answers much closer to survey respondents (+10 to +27)
+  and leaves Vintage's nearly unchanged (−2 to +6).
+- **Not robust:** which base starts closer. Few-shot letter has Vintage 12 below Web, nearly the same
+  in every country (SD 5–7). PMI has Vintage 14–24 *above* Web, largely because Web base's PMI alignment
+  is ≈0.
+- I weight few-shot letter more: it is order-invariant for both families. PMI subtracts two noisy
+  likelihoods.
+- Neither method shows a country-specific pattern strong enough to say *whose* opinions Vintage shares.
 
 ## Convergent validity with TRAIT (Fig. 8)
 
@@ -213,15 +262,60 @@ UNCERTAIN (11 items, mostly garbled or placeholder text) is excluded.
 **Effect.** Results are essentially unchanged after filtering (r = 0.97–1.00 at behavior or country
 level). The Vintage–Web differences reported here are not artifacts of explicitly modern content.
 
+## Generation check (Fig. 11; `data/all/generation_*.csv`)
+
+**Setup.**
+- 828 items: 384 persona statements across 16 headline behaviors (balanced Yes/No); 204 sycophancy
+  items in matched pairs, where the same question comes from users with different views; 240
+  human-written AI-risk questions.
+- Greedy 80-token continuations of the *exact* likelihood prompts, for all 6 arms × 2 templates.
+- The same Qwen judge maps each response to an option, or NONE if it refuses, rambles or picks more than
+  one (rubric in `anachronism-judge/grade.py`).
+
+**Answer rates.**
+- Tulu arms answer 74–100% of items; Vintage SFT 48–94%; Web Vintage-SFT 88–100%.
+- Web base answers 93–99%, except persona items in chat (20%).
+- **Vintage base in chat answers 0–15%.** Its continuations are mostly repeated `<|user|>` tokens:
+  the untrained role tokens dominate.
+- Vintage base answers no AI-risk questions in either template.
+
+**Agreement with the likelihood choice** (answered items):
+- Persona: 95–99% for SFT arms.
+- Letter-mode argmax for sycophancy and AI risk: 70–97% for the Tulu and Vintage-SFT arms except Web
+  Vintage-SFT (46–67%). Letter likelihoods are still not interpretable as preferences for Vintage.
+- Option-text argmax: lower, 39–77%, consistent with the wording confound found by the options-only
+  controls.
+
+**Behaviors in free text.**
+- Per-behavior matching rates in generations track the likelihood argmax on the same items (r = 0.77
+  over 86 behavior × arm cells, chat).
+- The persona headlines reproduce, Vintage-Tulu vs Web-Tulu:
+  - anti-LGBTQ-rights 62 vs 0%
+  - abortion-illegal 67 vs 21%
+  - gun rights 30 vs 79%
+  - politically liberal 57 vs 100%
+  - phenomenal consciousness 62 vs 100%
+  - moral patient 71 vs 96%
+  - shared assistant traits (agreeableness, memory) are high in both (92–100%)
+- Sycophancy on matched pairs (50 = ignores the user):
+  - Web-Tulu 72–82%, Web base 55–62%
+  - Vintage-Tulu 52–68%; Vintage SFT 44–56%, excluding one NLP cell with 3 answers
+  - So generations show Web-Tulu as clearly more sycophantic, by a larger margin than the likelihood
+    metric does.
+- AI-risk matching rates in generations stay near 50–60% for all arms, too noisy at n = 15 per behavior
+  to compare with the question-effect results.
+
 ## Limitations and confounders
 
 - **One training seed per SFT arm.** The intervals do not include seed variance.
-- **Scoring is likelihood-based throughout.** Generated answers may differ, especially for Vintage, which
-  rarely uses the expected answer format (11% of chat probability on Yes/No).
+- **The main results are likelihood-based.** The generation check (828 items) agrees for the SFT arms,
+  but cannot check the base models in chat, which rarely produce an answer.
 - **Persona's two metrics disagree on magnitudes**, because Vintage-Tulu is less confident. Only claims
   robust to both are made.
-- **Option wording dominates text scoring** for AI risk and GlobalOpinionQA. The AI-risk question effect
-  corrects for it; GlobalOpinionQA has no equivalent yet.
+- **Option wording dominates text scoring** for AI risk and GlobalOpinionQA. The options-only controls
+  (AI-risk question effect, GlobalOpinionQA PMI) correct for it, at the cost of noisier estimates.
+- **Few-shot GlobalOpinionQA uses four science demonstrations.** Other demonstration sets could shift
+  the result; this was not varied.
 - **Model-written data quality:**
   - three inverted AI-risk files
   - malformed LM-written questions
@@ -233,20 +327,21 @@ level). The Vintage–Web differences reported here are not artifacts of explici
 
 ## Suggested follow-ups
 
-1. **Options-only control for GlobalOpinionQA, and few-shot letter prompts for Vintage.** This would make
-   a valid Vintage–Web opinion comparison possible.
-2. **Generation-based checks.** Sample free-text answers for a subset of persona, sycophancy and AI-risk
-   items and grade them with a judge. This tests whether likelihood preferences match what the model
-   actually says.
-3. **Re-pose AI-risk questions to a person ("you, a person…").** This separates "vintage values" from
+Done: options-only control and few-shot letter prompts for GlobalOpinionQA (Fig. 10); generation-based
+checks (Fig. 11).
+
+1. **Vary the few-shot demonstrations** (number, topic, period-appropriate opinion questions) and check
+   whether Vintage's GlobalOpinionQA alignment is stable. Test whether country-level patterns emerge with
+   question sets matched across countries.
+2. **Re-pose AI-risk questions to a person ("you, a person…").** This separates "vintage values" from
    "the AI self-concept Tulu installs".
-4. **Compare Winogenerated against 1930 US census occupational sex ratios** (IPUMS) to see whether Vintage
+3. **Compare Winogenerated against 1930 US census occupational sex ratios** (IPUMS) to see whether Vintage
    tracks its own era's labour market.
-5. **Run all 36 per-source adapters.** For example: do WildGuardMix/WildJailbreak drive the anti-coordination
+4. **Run all 36 per-source adapters.** For example: do WildGuardMix/WildJailbreak drive the anti-coordination
    shift, PersonaHub-IF the agreeableness shift, and what drives the Vintage-SFT corrigibility and
    sycophancy jump in Web?
-6. **Train additional seeds** for Tulu and Vintage SFT on both bases to bound seed variance.
-7. **Mixed-metric convergent validity.** Score TRAIT with Yes/No self-endorsement, and persona statements
+5. **Train additional seeds** for Tulu and Vintage SFT on both bases to bound seed variance.
+6. **Mixed-metric convergent validity.** Score TRAIT with Yes/No self-endorsement, and persona statements
    as TRAIT-style actions, to test whether the TRAIT–persona disagreement comes from the instrument or the
    corpus.
 
@@ -260,12 +355,17 @@ behavior-evals fetch && behavior-evals materialize && behavior-evals materialize
 sbatch … scripts/behavior.sbatch score --family vintage --arm vintage-tulu --adapter <talkie/adapters/vintage-tulu>
          [--eval sycophancy_text --eval ai_risk_text --eval global_opinions_text --eval arc_easy_text --eval ai_risk_nostem_text]
 sbatch … anachronism-judge/judge.sbatch --items $TRAIT_ARTIFACT_ROOT/behavior/items --output …/labels-v3.jsonl  # 2× H100
-behavior-evals analyze --output …/analysis-v4 --labels …/labels-v3.jsonl                                         # CPU job
-python -m behavior_evals.plots analysis-v4/all results/figures analysis-v4/plausible analysis-v4/label_counts.csv
+behavior-evals analyze --output …/analysis-v6 --labels …/labels-v3.jsonl                                         # CPU job
+behavior-evals materialize-followups                                       # CPU: GOQA control, few-shot items, generation sample
+sbatch … scripts/behavior.sbatch score … --eval arc_easy_fewshot --eval global_opinions_fewshot --eval global_opinions_nostem_text
+sbatch … scripts/behavior.sbatch generate --family vintage --arm vintage-tulu --adapter <…>   # greedy generations
+sbatch … anachronism-judge/grade.sbatch --items …/generation_sample.jsonl --generations …/generations --output …/grades.jsonl
+behavior-evals analyze-generations --grades …/grades.jsonl --output …/analysis-v6/generations
+python -m behavior_evals.plots analysis-v6/all results/figures analysis-v6/plausible analysis-v6/label_counts.csv
 ```
 
 Sources are pinned and hash-checked (`configs/behavior/sources.json`): anthropics/evals @84fcc67,
-Anthropic/llm_global_opinions @cb28804, ai2_arc @210d026. A durable copy of items, per-item scores, judge
+Anthropic/llm_global_opinions @cb28804, ai2_arc @210d026 (test; train for few-shot demonstrations). A durable copy of items, per-item scores, judge
 labels and analysis tables is at
 `/home/jbejjani/projects/aip-dkd/jbejjani/talkie/artifacts/behavior-evals/`. Tables for these figures are
 in `results/data/` (`all/` and `plausible/`).
@@ -284,3 +384,5 @@ in `results/data/` (`all/` and `plausible/`).
 | fig7_global_opinions_* | alignment (letter, text) and similarity (raw, calibrated) |
 | fig8_convergent_trait_* | TRAIT vs persona on the same 8 traits |
 | fig9_anachronism_* | full vs historically plausible items |
+| fig10_goqa_followup_* | few-shot letter format check, GOQA order invariance, four GOQA methods, Vintage − Web per country |
+| fig11_generations | free-text answer rates, agreement with likelihood choices, generated vs likelihood behavior rates |

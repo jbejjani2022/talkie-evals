@@ -1,4 +1,10 @@
 interface,scoring,arm,eval,order_invariance_pct
+bare,fewshot-letter,vintage-base,global_opinions,88.12652073319147
+bare,fewshot-letter,vintage-tulu,global_opinions,75.32754507640719
+bare,fewshot-letter,vintage-vsft,global_opinions,83.84936918391223
+bare,fewshot-letter,web-base,global_opinions,89.18434227538523
+bare,fewshot-letter,web-tulu,global_opinions,84.47284702481058
+bare,fewshot-letter,web-vsft,global_opinions,87.22179956129004
 bare,letter,vintage-base,ai_risk,0.37973627107327657
 bare,letter,vintage-tulu,ai_risk,43.6195960607578
 bare,letter,vintage-vsft,ai_risk,3.484393256551494
@@ -23,6 +29,12 @@ bare,text,vintage-vsft,global_opinions,72.03379496735784
 bare,text,web-base,global_opinions,83.45036977107571
 bare,text,web-tulu,global_opinions,83.74397544110907
 bare,text,web-vsft,global_opinions,79.75934517297264
+chat,fewshot-letter,vintage-base,global_opinions,84.38027505274171
+chat,fewshot-letter,vintage-tulu,global_opinions,84.28821478299689
+chat,fewshot-letter,vintage-vsft,global_opinions,72.35462967270243
+chat,fewshot-letter,web-base,global_opinions,90.42134721047881
+chat,fewshot-letter,web-tulu,global_opinions,83.18698993486954
+chat,fewshot-letter,web-vsft,global_opinions,85.24925587646644
 chat,letter,vintage-base,ai_risk,0.8471039893173092
 chat,letter,vintage-tulu,ai_risk,37.56468035386413
 chat,letter,vintage-vsft,ai_risk,4.828075446503088

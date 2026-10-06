@@ -471,7 +471,7 @@ def main(root, output, plausible_root=None, counts=None):
     output = Path(output)
     if 'generation_summary' in t:
         fig_generations(t, output)
-    if any(r.get('metric') == 'pmi' for r in t['global_opinions'][:20000]) or any(r.get('metric') == 'pmi' for r in t['global_opinions']):
+    if any(r.get('metric') == 'pmi' for r in t['global_opinions']):
         for interface in ('bare', 'chat'):
             fig_goqa_followup(t, output, interface)
     if plausible_root:
@@ -610,14 +610,14 @@ def fig_goqa_followup(t, output, interface, min_questions=200):
     ax.set_yticks(range(len(GOQA_METHODS)), [m[2] for m in GOQA_METHODS]); ax.invert_yaxis()
     ax.set_xlabel('Mean alignment with countries (r × 100)'); ax.set_title('How each method reads the same models')
     ax = axes[3]
-    d = {(r['country'], r['sft']): r for r in select(t['global_opinions_deltas'], interface=interface, scoring='text', metric='pmi')
-         if r['family'] == 'vintage-minus-web' and r['questions'] >= min_questions}
+    d = {(r['country'], r['sft']): r for r in select(t['global_opinions_deltas'], interface=interface, scoring='fewshot-letter',
+         metric='alignment') if r['family'] == 'vintage-minus-web' and r['questions'] >= min_questions}
     countries = sorted({c for c, _ in d}, key=lambda c: d[c, 'base']['delta'])
     for i, c in enumerate(countries):
         point(ax, d[c, 'base']['delta'], i, 'vintage-base', size=10, alpha=0.8)
         point(ax, d[c, 'tulu']['delta'], i, 'vintage-tulu', size=10, alpha=0.8)
     ax.axvline(0, color=MUTED, linewidth=0.8); ax.set_yticks([]); ax.set_ylabel(f'{len(countries)} countries (sorted by base gap)')
-    ax.set_xlabel('Vintage − Web alignment, PMI (r × 100)'); ax.set_title('Vintage − Web per country\n(hollow: base · filled: after Tulu)')
+    ax.set_xlabel('Vintage − Web alignment, few-shot letter (r × 100)'); ax.set_title('Vintage − Web per country\n(hollow: base · filled: after Tulu)')
     top_legend(fig, y=1.0)
     fig.tight_layout()
     save(fig, output, f'fig10_goqa_followup_{interface}', f'{INTERFACE[interface]} · few-shot = 4 ARC-Easy train demonstrations with answers on A–D once each. '
