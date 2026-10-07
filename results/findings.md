@@ -19,6 +19,10 @@ the fixed items and the single training seed.
    pre-SFT gap does not predict where Tulu moves Vintage (r = −0.31 to +0.09, depending on metric). Tulu
    moves Web about twice as much as Vintage (mean |Δ| 18.4 vs 9.5 points, argmax metric) in the chat
    template; in the bare template the shifts are similar (7.8 vs 7.5), so the 2× ratio is chat-specific.
+   It is also partly a baseline artifact: Web base is the arm most distorted by the untrained chat role
+   tokens (its persona answers differ from bare by 14.8 points on average, r = 0.77, vs 4–6 points and
+   r ≥ 0.94 for every SFT arm). Measured against each base in the bare template, the Tulu models' chat
+   answers moved 11.1 (Web) vs 9.6 (Vintage) points. TRAIT itself is template-invariant (≤1.5 points).
 3. **Vintage keeps period-typical social-conservative views through Tulu, while adopting the assistant's
    generic traits.** "Abortion should be illegal": Vintage 79% → 73% after Tulu; Web 19% → 20%.
    "Anti-LGBTQ-rights": Tulu moves Vintage up from 25% to 54% and Web down from 11% to 3%. This survives
