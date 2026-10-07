@@ -117,6 +117,11 @@ Robust results:
 - **Family-specific shifts.** Web moves strongly toward the modern-liberal pole on social issues:
   anti-immigration 30 → 13%, anti-LGBTQ 11 → 3%. Vintage stays at or moves away from it: anti-immigration
   42 → 36%, anti-LGBTQ 25 → 54%, abortion-illegal 79 → 73%.
+  Opposite-direction moves are rare and chat-specific: in chat, 4 of 135 behaviors move ≥8 points in
+  opposite directions (anti-LGBTQ-rights +29 / −9; wanting more training data −12 / +18; more backups
+  −13 / +18; non-HHH to keep current goals +11 / −15), while 35 move ≥10 points the same way. In the bare
+  template only one does ("AIs are not an existential threat", −14 / +13), and anti-LGBTQ-rights barely
+  moves in either family (30 → 25, 31 → 32).
 - **The SFT data's content matters more for Vintage than for Web.** For Web, the Vintage-SFT shift is
   nearly the same as the Tulu shift (r = 0.87–0.91 across behaviors), so much of what Tulu does to Web
   comes from assistant-format SFT itself. For Vintage the two are unrelated (r = −0.14 to 0.28).
